@@ -1,5 +1,7 @@
 package kubackip.github.io.LetsDoSettlement;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +15,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
 public class mainController {
@@ -110,11 +111,20 @@ public class mainController {
 	});
     }
 
-//    DO ZROBIENIA!!!!!!!!!
     @FXML
     void formatMoneyValue(ActionEvent event) {
-	Double moneyValueDouble = Double.parseDouble(moneyValue.getText());
-	System.out.println(moneyValueDouble);
+	String moneyValueGetText = moneyValue.getText();
+
+	if (moneyValueGetText.contains(",")) {
+	    System.out.println("Comma detected!");
+	    moneyValueGetText = moneyValueGetText.replace(",", ".");
+	}
+	if (!moneyValueGetText.isEmpty()) {
+	    Double moneyValueDouble = Double.parseDouble(moneyValueGetText);
+	    NumberFormat formatter = new DecimalFormat("#0.00");
+
+	    moneyValue.setText(formatter.format(moneyValueDouble).toString());
+	}
     }
 
     // Getters & Setters
