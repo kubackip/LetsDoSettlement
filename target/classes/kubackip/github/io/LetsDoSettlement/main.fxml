@@ -68,13 +68,13 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="moneyValue" layoutX="19.0" layoutY="207.0" prefHeight="42.0" prefWidth="397.0">
+            <TextField fx:id="moneyValue" layoutX="19.0" layoutY="207.0" onAction="#formatMoneyValue" prefHeight="42.0" prefWidth="397.0" promptText="[PLN]">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
             <Button fx:id="buttonAddToList" layoutX="274.0" layoutY="485.0" mnemonicParsing="false" onAction="#addToList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" />
-            <DatePicker fx:id="dateOfPayment" layoutX="19.0" layoutY="291.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="397.0" promptText="dd/mm/yyy" />
+            <DatePicker fx:id="dateOfPayment" layoutX="19.0" layoutY="291.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="397.0" promptText="dd/mm/yyyy" />
             <TextField fx:id="paymentDescription" layoutX="19.0" layoutY="123.0" prefHeight="42.0" prefWidth="397.0">
                <font>
                   <Font size="14.0" />

@@ -13,18 +13,16 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
 public class mainController {
 
     // Value that comes from text field
-    private String value;
-
-    String pattern;
+    private String paymentDescriptionValue;
 
     // formatter for DatePicker, to set proper format value from MM/dd/yyyy to
     // dd/MM/yyyy
-//    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @FXML
     private ListView<String> paymentList;
@@ -42,11 +40,12 @@ public class mainController {
     private DatePicker dateOfPayment;
 
     @FXML
-    private ChoiceBox<?> payer;
+    private ChoiceBox<String> payer;
 
     @FXML
     private TextArea longPaymentDescription;
 
+    // Needed for adding values to ListView
     private ObservableList<String> observablePaymentList;
 
     @FXML
@@ -60,15 +59,19 @@ public class mainController {
     @FXML
     private void addToList(ActionEvent event) {
 	String valueFromTextField = paymentDescription.getText();
-	setValue(valueFromTextField);
+	setPaymentDescriptionValue(valueFromTextField);
 
 	paymentDescription.clear();
+	moneyValue.clear();
+	longPaymentDescription.clear();
 
-	updateList();
+	if (valueFromTextField.length() > 0) {
+	    updateList();
+	}
     }
 
     private void updateList() {
-	observablePaymentList.add(getValue());
+	observablePaymentList.add(getPaymentDescriptionValue());
 	paymentList.setItems(observablePaymentList);
     }
 
@@ -105,16 +108,22 @@ public class mainController {
 		}
 	    }
 	});
-	
-	System.out.println(dateOfPayment.getValue().toString());
     }
 
-    public String getValue() {
-	return value;
+//    DO ZROBIENIA!!!!!!!!!
+    @FXML
+    void formatMoneyValue(ActionEvent event) {
+	Double moneyValueDouble = Double.parseDouble(moneyValue.getText());
+	System.out.println(moneyValueDouble);
     }
 
-    public void setValue(String value) {
-	this.value = value;
+    // Getters & Setters
+    public String getPaymentDescriptionValue() {
+	return paymentDescriptionValue;
+    }
+
+    public void setPaymentDescriptionValue(String value) {
+	this.paymentDescriptionValue = value;
     }
 
 }
