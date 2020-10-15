@@ -14,24 +14,24 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-	scene = new Scene(loadFXML("main"));
+        scene = new Scene(loadFXML("main"));
 
-	stage.setTitle("Let's do a Settlement");
-	stage.setScene(scene);
-	stage.show();
+        stage.setTitle("Let's do a Settlement");
+        stage.setScene(scene);
+        stage.show();
     }
 
     static void setRoot(String fxml) throws IOException {
-	scene.setRoot(loadFXML(fxml));
+        scene.setRoot(loadFXML(fxml));
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-	FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
 
-	return fxmlLoader.load();
+        return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
-	launch();
+        launch();
     }
 }
