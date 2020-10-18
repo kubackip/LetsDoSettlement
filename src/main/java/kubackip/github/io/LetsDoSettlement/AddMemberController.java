@@ -1,5 +1,6 @@
 package kubackip.github.io.LetsDoSettlement;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,11 @@ public class AddMemberController implements Initializable {
         // sprawdzenie czy to działa
         System.out.println(member.get(id));
         id++;
+    }
+
+    @FXML
+    private void backToMain(ActionEvent event) throws IOException {
+        App.setRoot("main");
     }
 
     @Override

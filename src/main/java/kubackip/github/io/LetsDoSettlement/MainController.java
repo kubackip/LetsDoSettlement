@@ -1,5 +1,6 @@
 package kubackip.github.io.LetsDoSettlement;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -157,6 +158,11 @@ public class MainController {
         alert.setTitle("Error");
         alert.setContentText("Input must contain numbers.");
         alert.showAndWait();
+    }
+    
+    @FXML
+    private void createNewMember(ActionEvent event) throws IOException {
+        App.setRoot("addMember");
     }
 
     // Getters & Setters
