@@ -2,8 +2,8 @@ package kubackip.github.io.LetsDoSettlement;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,29 +13,31 @@ import javafx.scene.control.TextField;
 
 public class AddMemberController implements Initializable {
 
-    private Integer id = 0;
-
-    private Map<Integer, String> member;
-
-    @FXML
-    private TextField setName;
+    private int id;
+    private static List<Members> membersList;
 
     @FXML
-    private TextField setSecondName;
+    private TextField nameTextField;
+
+    @FXML
+    private TextField secondNameTextField;
 
     @FXML
     private Button addMemberButton;
 
     @FXML
-    void addMember(ActionEvent event) {
-        member = new HashMap<Integer, String>();
+    private void addMember(ActionEvent event) {
+        String name = nameTextField.getText();
+        String secondName = secondNameTextField.getText();
 
-        String fullName = setName.getText() + " " + setSecondName.getText();
+        if (!name.isEmpty() && !secondName.isEmpty()) {
+            Members member = new Members(name, secondName, id);
+            membersList.add(member);
+        }
 
-        member.put(id, fullName);
+        System.out.println(membersList.get(id).toString());
 
-        // sprawdzenie czy to działa
-        System.out.println(member.get(id));
+        clearAllTheTextFields();
         id++;
     }
 
@@ -44,8 +46,24 @@ public class AddMemberController implements Initializable {
         App.setRoot("main");
     }
 
+    @FXML
+    private void clearAllTheTextFields() {
+        nameTextField.clear();
+        secondNameTextField.clear();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        membersList = new ArrayList<>();
+        this.id = 0;
     }
+
+    public static List getMemberList() {
+        if (membersList != null) {
+            return membersList;
+        } else {
+            return null;
+        }
+    }
+
 }

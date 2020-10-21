@@ -10,7 +10,6 @@ public class Members {
         this.name = name;
         this.secondName = secondName;
         this.id = id;
-
     }
 
     public String getName() {
@@ -36,4 +35,11 @@ public class Members {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Member name: " + getName() + ", second name: " + getSecondName() 
+                + ", id = " + getId();
+    }
+
 }

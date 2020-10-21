@@ -21,7 +21,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Clear All" />
+                  <MenuItem mnemonicParsing="false" onAction="#clearAllTheTextFields" text="Clear All" />
                   <MenuItem mnemonicParsing="false" text="Choose Theme" />
                </items>
             </Menu>
@@ -34,17 +34,17 @@
       </MenuBar>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <TextField fx:id="setName" layoutX="27.0" layoutY="51.0" prefHeight="42.0" prefWidth="397.0">
+            <TextField fx:id="nameTextField" layoutX="27.0" layoutY="51.0" prefHeight="42.0" prefWidth="592.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="setSecondName" layoutX="27.0" layoutY="144.0" prefHeight="42.0" prefWidth="397.0">
+            <TextField fx:id="secondNameTextField" layoutX="27.0" layoutY="144.0" prefHeight="42.0" prefWidth="592.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="addMemberButton" layoutX="439.0" layoutY="318.0" mnemonicParsing="false" onAction="#addMember" prefHeight="29.0" prefWidth="173.0" text="Dodaj użytkownika" />
+            <Button fx:id="addMemberButton" layoutX="198.0" layoutY="255.0" mnemonicParsing="false" onAction="#addMember" prefHeight="42.0" prefWidth="244.0" text="Dodaj użytkownika" />
             <Label layoutX="27.0" layoutY="24.0" prefHeight="16.0" prefWidth="91.0" text="Podaj Imię" />
             <Label layoutX="27.0" layoutY="120.0" prefHeight="16.0" prefWidth="139.0" text="Podaj Nazwisko" />
          </children>

@@ -40,7 +40,7 @@ public class MainController {
     private DatePicker dateOfPayment;
 
     @FXML
-    private ChoiceBox<String> payer;
+    private ChoiceBox<Members> payer;
 
     @FXML
     private TextArea longPaymentDescription;
@@ -56,15 +56,19 @@ public class MainController {
         paymentList.setItems(observablePaymentList);
     }
 
+    /**
+     *
+     *
+     * @param event
+     */
     @FXML
     private void addToList(ActionEvent event) {
         String valueFromTextField = paymentDescription.getText();
         setPaymentDescriptionValue(valueFromTextField);
 
-        paymentDescription.clear();
-        moneyValue.clear();
-        longPaymentDescription.clear();
+        clearAllTheTextFields();
 
+        // simple validator, to change in the future
         if (valueFromTextField.length() > 0) {
             updateList();
         }
@@ -134,6 +138,18 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void setAddMemberAsRoot(ActionEvent event) throws IOException {
+        App.setRoot("addMember");
+    }
+
+    @FXML
+    private void clearAllTheTextFields() {
+        paymentDescription.clear();
+        moneyValue.clear();
+        longPaymentDescription.clear();
+    }
+
     /**
      * Checks with regular expression if input value contains numbers and dot or
      * comma signs.
@@ -144,12 +160,9 @@ public class MainController {
         String value = moneyValue.getText();
         String regex = "^[0-9.,]*$";
 
-        if (value.matches(regex)) {
-            return true;
-        } else {
-            return false;
-        }
+        return value.matches(regex);
     }
+
     /**
      * Created simple Alert Box. It informs about possible input value.
      */
@@ -159,12 +172,11 @@ public class MainController {
         alert.setContentText("Input must contain numbers.");
         alert.showAndWait();
     }
-    
-    @FXML
-    private void createNewMember(ActionEvent event) throws IOException {
-        App.setRoot("addMember");
-    }
 
+//    @FXML
+//    private void chooseMemberWhoPaid(ActionEvent event) {
+//        
+//    }
     // Getters & Setters
     public String getPaymentDescriptionValue() {
         return paymentDescriptionValue;
@@ -172,6 +184,16 @@ public class MainController {
 
     public void setPaymentDescriptionValue(String value) {
         this.paymentDescriptionValue = value;
+    }
+
+    // funcionality test only
+    @FXML
+    private void checkIfItWorks() {
+        if (AddMemberController.getMemberList() != null) {
+            for (int i = 0; i < AddMemberController.getMemberList().size(); i++) {
+                System.out.println(AddMemberController.getMemberList().toString());
+            }
+        }
     }
 
 }
