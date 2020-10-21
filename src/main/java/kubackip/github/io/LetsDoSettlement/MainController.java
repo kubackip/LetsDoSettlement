@@ -54,6 +54,11 @@ public class MainController {
         observablePaymentList = FXCollections.observableArrayList();
 
         paymentList.setItems(observablePaymentList);
+
+        if (AddMemberController.getMemberList() != null) {
+            payer.getItems().addAll(AddMemberController.getMemberList());
+            System.out.println(AddMemberController.getMemberList().toString());
+        }
     }
 
     /**
@@ -185,15 +190,14 @@ public class MainController {
     public void setPaymentDescriptionValue(String value) {
         this.paymentDescriptionValue = value;
     }
-
-    // funcionality test only
-    @FXML
-    private void checkIfItWorks() {
+    
+    private void getPayers() {
         if (AddMemberController.getMemberList() != null) {
-            for (int i = 0; i < AddMemberController.getMemberList().size(); i++) {
-                System.out.println(AddMemberController.getMemberList().toString());
+            for (Object o : AddMemberController.getMemberList()) {
+                System.out.println(o.toString());
             }
+//            payer = new ChoiceBox<>();
+//            payer.getItems().addAll(AddMemberController.getMemberList());
         }
     }
-
 }

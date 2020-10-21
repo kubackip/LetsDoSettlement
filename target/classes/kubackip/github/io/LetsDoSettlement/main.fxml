@@ -43,7 +43,7 @@
       </MenuBar>
       <AnchorPane prefHeight="548.0" prefWidth="900.0">
          <children>
-            <ChoiceBox fx:id="payer" layoutX="19.0" layoutY="44.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="payer" layoutX="19.0" layoutY="44.0" prefHeight="26.0" prefWidth="236.0" />
             <TextField fx:id="paymentDescription" layoutX="19.0" layoutY="123.0" prefHeight="42.0" prefWidth="397.0">
                <font>
                   <Font size="14.0" />
@@ -56,7 +56,6 @@
             </TextField>
             <DatePicker fx:id="dateOfPayment" layoutX="19.0" layoutY="291.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="397.0" promptText="dd/mm/yyyy" />
             <TextArea fx:id="longPaymentDescription" layoutX="19.0" layoutY="377.0" prefHeight="84.0" prefWidth="397.0" />
-            <Button layoutX="63.0" layoutY="493.0" mnemonicParsing="false" onAction="#checkIfItWorks" text="Jakiś Napis" />
             <Button fx:id="buttonAddToList" layoutX="274.0" layoutY="485.0" mnemonicParsing="false" onAction="#addToList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" />
             <Label layoutX="19.0" layoutY="14.0" text="Kto płacił">
                <font>

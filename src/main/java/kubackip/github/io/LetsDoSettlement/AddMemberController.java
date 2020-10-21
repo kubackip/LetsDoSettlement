@@ -35,8 +35,6 @@ public class AddMemberController implements Initializable {
             membersList.add(member);
         }
 
-        System.out.println(membersList.get(id).toString());
-
         clearAllTheTextFields();
         id++;
     }
@@ -58,7 +56,7 @@ public class AddMemberController implements Initializable {
         this.id = 0;
     }
 
-    public static List getMemberList() {
+    static List<Members> getMemberList() {
         if (membersList != null) {
             return membersList;
         } else {

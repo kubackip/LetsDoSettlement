@@ -41,5 +41,4 @@ public class Members {
         return "Member name: " + getName() + ", second name: " + getSecondName() 
                 + ", id = " + getId();
     }
-
 }
