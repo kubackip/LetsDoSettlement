@@ -47,4 +47,10 @@ public class Payment {
     public void setDate(LocalDate date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" + "name=" + name + ", description=" + description
+                + ", value=" + value + ", date=" + date + '}';
+    }
 }

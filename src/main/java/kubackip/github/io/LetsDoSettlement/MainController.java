@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +25,11 @@ public class MainController {
 
     // Value that comes from text field
     private String paymentDescriptionValue;
+    private String longPaymentDescriptionValue;
+    private float moneyValueValue;
+
+    private Payment payment;
+    private List<Members> memberList = new ArrayList<Members>();
 
     @FXML
     private ListView<String> paymentList;
@@ -52,13 +59,9 @@ public class MainController {
     public void initialize() {
         // returns new ArrayList
         observablePaymentList = FXCollections.observableArrayList();
-
         paymentList.setItems(observablePaymentList);
 
-        if (AddMemberController.getMemberList() != null) {
-            payer.getItems().addAll(AddMemberController.getMemberList());
-            System.out.println(AddMemberController.getMemberList().toString());
-        }
+        getPayers();
     }
 
     /**
@@ -68,13 +71,31 @@ public class MainController {
      */
     @FXML
     private void addToList(ActionEvent event) {
-        String valueFromTextField = paymentDescription.getText();
-        setPaymentDescriptionValue(valueFromTextField);
+        String valueFromDescriptionTextField = paymentDescription.getText();
+        setPaymentDescriptionValue(valueFromDescriptionTextField);
+        String valueFromLongDescriptionTextField = longPaymentDescription.getText();
+        setLongPaymentDescriptionValue(
+                valueFromLongDescriptionTextField);
+        float valueFromMoneyValueTextField = getValueFromStringToFloat(
+                moneyValue.getText());
+        setMoneyValueValue(valueFromMoneyValueTextField);
 
         clearAllTheTextFields();
 
         // simple validator, to change in the future
-        if (valueFromTextField.length() > 0) {
+        if (valueFromDescriptionTextField.length() > 0) {
+//            if (paymentDescription != null && moneyValue != null
+//                    && longPaymentDescription != null) {
+//                payment = new Payment(getPaymentDescriptionValue(),
+//                        longPaymentDescription.getText(),
+//                        getValueFromStringToFloat(moneyValue.getText()),
+//                        LocalDate.now());
+//            }
+            System.out.println(getPaymentDescriptionValue());
+            System.out.println(getLongPaymentDescriptionValue());
+            System.out.println(getMoneyValueValue());
+            System.out.println(LocalDate.now());
+
             updateList();
         }
     }
@@ -84,9 +105,9 @@ public class MainController {
         paymentList.setItems(observablePaymentList);
     }
 
-    /*
+    /**
      * Converting data format to dd-MM-yyyy
-     * 
+     *
      * Code of converter taken from
      * https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.
      * html
@@ -178,11 +199,22 @@ public class MainController {
         alert.showAndWait();
     }
 
-//    @FXML
-//    private void chooseMemberWhoPaid(ActionEvent event) {
-//        
-//    }
-    // Getters & Setters
+    private void getPayers() {
+        if (AddMemberController.getMemberList() != null) {
+            payer.getItems().addAll(AddMemberController.getMemberList());
+            System.out.println(AddMemberController.getMemberList().toString());
+
+            memberList = AddMemberController.getMemberList();
+        }
+    }
+
+    private float getValueFromStringToFloat(String value) {
+        return Float.parseFloat(value);
+    }
+
+    /**
+     * Getters & Setters
+     */
     public String getPaymentDescriptionValue() {
         return paymentDescriptionValue;
     }
@@ -190,14 +222,20 @@ public class MainController {
     public void setPaymentDescriptionValue(String value) {
         this.paymentDescriptionValue = value;
     }
-    
-    private void getPayers() {
-        if (AddMemberController.getMemberList() != null) {
-            for (Object o : AddMemberController.getMemberList()) {
-                System.out.println(o.toString());
-            }
-//            payer = new ChoiceBox<>();
-//            payer.getItems().addAll(AddMemberController.getMemberList());
-        }
+
+    public String getLongPaymentDescriptionValue() {
+        return longPaymentDescriptionValue;
+    }
+
+    public void setLongPaymentDescriptionValue(String longPaymentDescriptionValue) {
+        this.longPaymentDescriptionValue = longPaymentDescriptionValue;
+    }
+
+    public float getMoneyValueValue() {
+        return moneyValueValue;
+    }
+
+    public void setMoneyValueValue(float moneyValueValue) {
+        this.moneyValueValue = moneyValueValue;
     }
 }
