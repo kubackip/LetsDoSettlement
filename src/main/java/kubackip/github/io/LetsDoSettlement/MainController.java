@@ -84,18 +84,17 @@ public class MainController {
 
         // simple validator, to change in the future
         if (valueFromDescriptionTextField.length() > 0) {
-//            if (paymentDescription != null && moneyValue != null
-//                    && longPaymentDescription != null) {
-//                payment = new Payment(getPaymentDescriptionValue(),
-//                        longPaymentDescription.getText(),
-//                        getValueFromStringToFloat(moneyValue.getText()),
-//                        LocalDate.now());
-//            }
-            System.out.println(getPaymentDescriptionValue());
-            System.out.println(getLongPaymentDescriptionValue());
-            System.out.println(getMoneyValueValue());
-            System.out.println(LocalDate.now());
-
+            if (valueFromDescriptionTextField.length() > 0
+                    && valueFromLongDescriptionTextField.length() > 0
+                    && valueFromMoneyValueTextField != 0.00) {
+                payment = new Payment(getPaymentDescriptionValue(),
+                        getLongPaymentDescriptionValue(),
+                        getMoneyValueValue(),
+                        LocalDate.now());
+            }
+            System.out.println("Payment toString:");
+            System.out.println(payment.toString());
+            
             updateList();
         }
     }
