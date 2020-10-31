@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
@@ -29,19 +28,19 @@ public class MainController {
     private float moneyValueValue;
 
     private Payment payment;
-    private List<Members> memberList = new ArrayList<Members>();
+    private List<Members> memberList = new ArrayList<>();
+    private List<Payment> paymentList = new ArrayList<>();
+    private ObservableList<String> observablePaymentList;
+    private int paymentID;
 
     @FXML
-    private ListView<String> paymentList;
+    private ListView<String> paymentListView;
 
     @FXML
     private TextField paymentDescription;
 
     @FXML
     private TextField moneyValue;
-
-    @FXML
-    private Button buttonAddToList;
 
     @FXML
     private DatePicker dateOfPayment;
@@ -53,24 +52,23 @@ public class MainController {
     private TextArea longPaymentDescription;
 
     // Needed for adding values to ListView
-    private ObservableList<String> observablePaymentList;
-
     @FXML
     public void initialize() {
         // returns new ArrayList
         observablePaymentList = FXCollections.observableArrayList();
-        paymentList.setItems(observablePaymentList);
+        paymentListView.setItems(observablePaymentList);
 
+        this.paymentID = 0;
         getPayers();
     }
 
     /**
-     *
+     * Creating new Payment object, with values from text fields and etc.
      *
      * @param event
      */
     @FXML
-    private void addToList(ActionEvent event) {
+    private void addToPaymentList(ActionEvent event) {
         String valueFromDescriptionTextField = paymentDescription.getText();
         setPaymentDescriptionValue(valueFromDescriptionTextField);
         String valueFromLongDescriptionTextField = longPaymentDescription.getText();
@@ -80,28 +78,29 @@ public class MainController {
                 moneyValue.getText());
         setMoneyValueValue(valueFromMoneyValueTextField);
 
-        clearAllTheTextFields();
+        String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
 
         // simple validator, to change in the future
-        if (valueFromDescriptionTextField.length() > 0) {
-            if (valueFromDescriptionTextField.length() > 0
-                    && valueFromLongDescriptionTextField.length() > 0
-                    && valueFromMoneyValueTextField != 0.00) {
+        if (valueFromDescriptionTextField.length() > 0
+                && valueFromMoneyValueTextField != 0.00) {
+            if (observablePaymentList.contains(valueName)) {
+                showAlertBox("Płatność o takiej nazwie już istanieje, "
+                        + "proszę wybrac inną nazwę!");
+            } else {
                 payment = new Payment(getPaymentDescriptionValue(),
                         getLongPaymentDescriptionValue(),
                         getMoneyValueValue(),
-                        LocalDate.now());
-            }
-            System.out.println("Payment toString:");
-            System.out.println(payment.toString());
-            
-            updateList();
-        }
-    }
+                        dateOfPayment.getValue(),
+                        paymentID);
 
-    private void updateList() {
-        observablePaymentList.add(getPaymentDescriptionValue());
-        paymentList.setItems(observablePaymentList);
+                System.out.println(payment.toString());
+                paymentList.add(paymentID, payment);
+
+                clearAllTheTextFields();
+                updateList();
+                paymentID++;
+            }
+        }
     }
 
     /**
@@ -159,7 +158,7 @@ public class MainController {
             moneyValue.setText(formatter.format(moneyValueDouble));
         } else if (!inputIsNumber()) {
             //shows Alert Box
-            showAlertBox();
+            showAlertBox("Input must contain numbers.");
         }
     }
 
@@ -175,6 +174,36 @@ public class MainController {
         longPaymentDescription.clear();
     }
 
+    @FXML
+    private void showPaymentDetails(ActionEvent event) {
+        if (paymentListView.getSelectionModel().getSelectedItem() != null) {
+//            String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
+
+            idOfChoosenMember();
+            System.out.println(paymentList.get(0));
+        }
+    }
+
+    private int idOfChoosenMember() {
+        String member = payer.getValue().getName() + payer.getValue().getSecondName();
+        System.out.println(member);
+        return 0;
+    }
+
+    /**
+     * Updates ListView paymentListView with value from paymentDescription and
+     * dateOfPayment fields.
+     */
+    private void updateList() {
+        String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
+        if (!observablePaymentList.contains(valueName)) {
+            observablePaymentList.add(getPaymentDescriptionValue() + " - " + getDateOfPayment());
+            paymentListView.setItems(observablePaymentList);
+        } else {
+            showAlertBox("Nazwa płatności nie może się powtarzać!");
+        }
+    }
+
     /**
      * Checks with regular expression if input value contains numbers and dot or
      * comma signs.
@@ -188,22 +217,19 @@ public class MainController {
         return value.matches(regex);
     }
 
-    /**
-     * Created simple Alert Box. It informs about possible input value.
-     */
-    private void showAlertBox() {
+    private void showAlertBox(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setContentText("Input must contain numbers.");
+        alert.setContentText(alertMessage);
         alert.showAndWait();
     }
 
     private void getPayers() {
         if (AddMemberController.getMemberList() != null) {
             payer.getItems().addAll(AddMemberController.getMemberList());
-            System.out.println(AddMemberController.getMemberList().toString());
-
             memberList = AddMemberController.getMemberList();
+
+            System.out.println(AddMemberController.getMemberList().toString());
         }
     }
 
@@ -216,6 +242,10 @@ public class MainController {
      */
     public String getPaymentDescriptionValue() {
         return paymentDescriptionValue;
+    }
+
+    public String getDateOfPayment() {
+        return dateOfPayment.getValue().toString();
     }
 
     public void setPaymentDescriptionValue(String value) {

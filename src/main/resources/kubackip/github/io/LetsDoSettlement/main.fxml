@@ -56,7 +56,7 @@
             </TextField>
             <DatePicker fx:id="dateOfPayment" layoutX="19.0" layoutY="291.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="397.0" promptText="dd/mm/yyyy" />
             <TextArea fx:id="longPaymentDescription" layoutX="19.0" layoutY="377.0" prefHeight="84.0" prefWidth="397.0" />
-            <Button fx:id="buttonAddToList" layoutX="274.0" layoutY="485.0" mnemonicParsing="false" onAction="#addToList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" />
+            <Button layoutX="274.0" layoutY="485.0" mnemonicParsing="false" onAction="#addToPaymentList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" />
             <Label layoutX="19.0" layoutY="14.0" text="Kto płacił">
                <font>
                   <Font size="15.0" />
@@ -82,9 +82,10 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <ListView fx:id="paymentList" layoutX="461.0" layoutY="18.0" prefHeight="511.0" prefWidth="425.0" />
+            <ListView fx:id="paymentListView" layoutX="461.0" layoutY="18.0" prefHeight="444.0" prefWidth="425.0" />
             <Separator layoutX="442.0" orientation="VERTICAL" prefHeight="548.0" prefWidth="7.0" />
             <Separator layoutX="-1.0" layoutY="546.0" prefHeight="3.0" prefWidth="900.0" />
+            <Button layoutX="718.0" layoutY="493.0" mnemonicParsing="false" onAction="#showPaymentDetails" prefHeight="26.0" prefWidth="136.0" text="Show details" />
          </children>
       </AnchorPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">

@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 public class AddMemberController implements Initializable {
 
     private int id;
-    private static List<Members> membersList;
+    private static List<Members> membersList = new ArrayList<>();
 
     @FXML
     private TextField nameTextField;
@@ -52,7 +52,7 @@ public class AddMemberController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        membersList = new ArrayList<>();
+//        membersList = new ArrayList<>();
         this.id = 0;
     }
 
