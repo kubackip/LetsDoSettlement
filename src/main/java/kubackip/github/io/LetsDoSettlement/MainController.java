@@ -6,7 +6,10 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,12 +29,13 @@ public class MainController {
     private String paymentDescriptionValue;
     private String longPaymentDescriptionValue;
     private float moneyValueValue;
+    private int paymentID;
 
     private Payment payment;
     private List<Members> memberList = new ArrayList<>();
     private List<Payment> paymentList = new ArrayList<>();
+    private Map<Integer, String> assignIdToPayment = new HashMap<>();
     private ObservableList<String> observablePaymentList;
-    private int paymentID;
 
     @FXML
     private ListView<String> paymentListView;
@@ -91,10 +95,10 @@ public class MainController {
                         getLongPaymentDescriptionValue(),
                         getMoneyValueValue(),
                         dateOfPayment.getValue(),
-                        paymentID);
+                        paymentID, payer.getValue().getId());
 
                 System.out.println(payment.toString());
-                paymentList.add(paymentID, payment);
+                paymentList.add(payment);
 
                 clearAllTheTextFields();
                 updateList();
@@ -157,7 +161,6 @@ public class MainController {
 
             moneyValue.setText(formatter.format(moneyValueDouble));
         } else if (!inputIsNumber()) {
-            //shows Alert Box
             showAlertBox("Input must contain numbers.");
         }
     }
@@ -177,17 +180,39 @@ public class MainController {
     @FXML
     private void showPaymentDetails(ActionEvent event) {
         if (paymentListView.getSelectionModel().getSelectedItem() != null) {
-//            String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
+            String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
+            int mapKeyValue;
 
-            idOfChoosenMember();
-            System.out.println(paymentList.get(0));
+            if (assignIdToPayment.containsValue(specificPayment)) {
+                mapKeyValue = getKeyFromValue(assignIdToPayment, specificPayment);
+                System.out.println(paymentList.get(mapKeyValue));
+            }
         }
     }
 
-    private int idOfChoosenMember() {
-        String member = payer.getValue().getName() + payer.getValue().getSecondName();
-        System.out.println(member);
-        return 0;
+    /**
+     * The example of how to get key from value using Map is taken from
+     * https://www.javacodeexamples.com/java-hashmap-get-key-from-value-example/2318
+     *
+     * @param <K>
+     * @param <V>
+     * @param map
+     * @param value
+     * @return
+     */
+    private static <K, V> K getKeyFromValue(Map<K, V> map, Object value) {
+        //get all map keys using keySet method
+        Set<K> keys = map.keySet();
+
+        //iterate all keys
+        for (K key : keys) {
+            //if maps value for the current key matches, return the key
+            if (map.get(key).equals(value)) {
+                return key;
+            }
+        }
+        //if no values matches, return null
+        return null;
     }
 
     /**
@@ -195,10 +220,12 @@ public class MainController {
      * dateOfPayment fields.
      */
     private void updateList() {
-        String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
-        if (!observablePaymentList.contains(valueName)) {
+        String specificPayment = getPaymentDescriptionValue() + " - " + getDateOfPayment();
+
+        if (!observablePaymentList.contains(specificPayment)) {
             observablePaymentList.add(getPaymentDescriptionValue() + " - " + getDateOfPayment());
             paymentListView.setItems(observablePaymentList);
+            assignIdToPayment.put(paymentID, specificPayment);
         } else {
             showAlertBox("Nazwa płatności nie może się powtarzać!");
         }

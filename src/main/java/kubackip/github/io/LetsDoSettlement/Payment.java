@@ -9,13 +9,16 @@ public class Payment {
     private float value;
     private LocalDate date;
     private int paymentID;
+    private int payerID;
 
-    public Payment(String name, String description, float value, LocalDate date, int paymentID) {
+    public Payment(String name, String description, float value, LocalDate date,
+            int paymentID, int payerID) {
         this.name = name;
         this.description = description;
         this.value = value;
         this.date = date;
         this.paymentID = paymentID;
+        this.payerID = payerID;
     }
 
     public String getName() {
@@ -61,6 +64,7 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" + "name=" + name + ", description=" + description
-                + ", value=" + value + ", date=" + date + ", id=" + paymentID + '}';
+                + ", value=" + value + ", date=" + date + ", paymentID=" + paymentID
+                + ", payerID: " + payerID + '}';
     }
 }
