@@ -56,12 +56,11 @@ public class AddMemberController implements Initializable {
         this.id = 0;
     }
 
-    static List<Members> getMemberList() {
+    public static List<Members> getMemberList() {
         if (membersList != null) {
             return membersList;
         } else {
             return null;
         }
     }
-
 }

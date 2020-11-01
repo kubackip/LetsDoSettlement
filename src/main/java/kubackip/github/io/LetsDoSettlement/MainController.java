@@ -27,15 +27,21 @@ public class MainController {
 
     // Value that comes from text field
     private String paymentDescriptionValue;
+    private String paymentDescriptionValueDeduct;
     private String longPaymentDescriptionValue;
     private float moneyValueValue;
+    private float moneyValueValueDeduct;
     private int paymentID;
 
     private Payment payment;
+    private DeductedPayments deductedPayment;
+
     private List<Members> memberList = new ArrayList<>();
     private List<Payment> paymentList = new ArrayList<>();
+    private List<DeductedPayments> deductedPaymentList = new ArrayList<>();
     private Map<Integer, String> assignIdToPayment = new HashMap<>();
     private ObservableList<String> observablePaymentList;
+    private ObservableList<String> observableDeductList;
 
     @FXML
     private ListView<String> paymentListView;
@@ -55,12 +61,27 @@ public class MainController {
     @FXML
     private TextArea longPaymentDescription;
 
+    @FXML
+    private TextField paymentDescriptionDeduct;
+
+    @FXML
+    private ChoiceBox<Members> payerDeduct;
+
+    @FXML
+    private TextField moneyValueDeduct;
+
+    @FXML
+    private ListView<String> deductListView;
+
     // Needed for adding values to ListView
     @FXML
     public void initialize() {
         // returns new ArrayList
         observablePaymentList = FXCollections.observableArrayList();
+        observableDeductList = FXCollections.observableArrayList();
+
         paymentListView.setItems(observablePaymentList);
+        deductListView.setItems(observableDeductList);
 
         this.paymentID = 0;
         getPayers();
@@ -84,20 +105,20 @@ public class MainController {
 
         String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
 
-        // simple validator, to change in the future
         if (valueFromDescriptionTextField.length() > 0
                 && valueFromMoneyValueTextField != 0.00) {
             if (observablePaymentList.contains(valueName)) {
                 showAlertBox("Płatność o takiej nazwie już istanieje, "
                         + "proszę wybrac inną nazwę!");
             } else {
-                payment = new Payment(getPaymentDescriptionValue(),
+                payment = new Payment(
+                        getPaymentDescriptionValue(),
                         getLongPaymentDescriptionValue(),
                         getMoneyValueValue(),
                         dateOfPayment.getValue(),
-                        paymentID, payer.getValue().getId());
+                        paymentID,
+                        payer.getValue().getId());
 
-                System.out.println(payment.toString());
                 paymentList.add(payment);
 
                 clearAllTheTextFields();
@@ -105,6 +126,27 @@ public class MainController {
                 paymentID++;
             }
         }
+    }
+
+    @FXML
+    private void addDeductedPayment(ActionEvent event) {
+        String valueFromDescriptionTextFieldDeduct = paymentDescriptionDeduct.getText();
+        setPaymentDescriptionValueDeduct(valueFromDescriptionTextFieldDeduct);
+        float valueFromMoneyValueTextField = getValueFromStringToFloat(
+                moneyValueDeduct.getText());
+        setMoneyValueValueDeduct(valueFromMoneyValueTextField);
+
+        deductedPayment = new DeductedPayments(getPaymentDescriptionValueDeduct(),
+                getMoneyValueValueDeduct(),
+                 paymentID,
+                payerDeduct.getValue().getId());
+
+        deductedPaymentList.add(deductedPayment);
+        System.out.println(deductedPaymentList);
+        
+        paymentDescriptionDeduct.clear();
+        moneyValueDeduct.clear();
+        updateDeductList();
     }
 
     /**
@@ -149,20 +191,12 @@ public class MainController {
      */
     @FXML
     private void formatMoneyValue(ActionEvent event) {
-        String moneyValueGetText = moneyValue.getText();
+        formatTextFieldWithMoneyValue(moneyValue);
+    }
 
-        if (moneyValueGetText.contains(",")) {
-            System.out.println("Comma detected!");
-            moneyValueGetText = moneyValueGetText.replace(",", ".");
-        }
-        if (!moneyValueGetText.isEmpty() && inputIsNumber()) {
-            Double moneyValueDouble = Double.parseDouble(moneyValueGetText);
-            NumberFormat formatter = new DecimalFormat("#0.00");
-
-            moneyValue.setText(formatter.format(moneyValueDouble));
-        } else if (!inputIsNumber()) {
-            showAlertBox("Input must contain numbers.");
-        }
+    @FXML
+    private void formatMoneyValueDeduct(ActionEvent event) {
+        formatTextFieldWithMoneyValue(moneyValueDeduct);
     }
 
     @FXML
@@ -175,6 +209,9 @@ public class MainController {
         paymentDescription.clear();
         moneyValue.clear();
         longPaymentDescription.clear();
+        paymentDescriptionDeduct.clear();
+        moneyValueDeduct.clear();
+        deductListView.getItems().clear();
     }
 
     @FXML
@@ -190,29 +227,43 @@ public class MainController {
         }
     }
 
+    private void formatTextFieldWithMoneyValue(TextField field) {
+        String fieldValueGetText = field.getText();
+
+        if (fieldValueGetText.contains(",")) {
+            fieldValueGetText = fieldValueGetText.replace(",", ".");
+        }
+        if (!fieldValueGetText.isEmpty() && inputIsNumber()) {
+            Double moneyValueDouble = Double.parseDouble(fieldValueGetText);
+            NumberFormat formatter = new DecimalFormat("#0.00");
+
+            field.setText(formatter.format(moneyValueDouble));
+        } else if (!inputIsNumber()) {
+            showAlertBox("Input must contain numbers.");
+        }
+    }
+
     /**
      * The example of how to get key from value using Map is taken from
      * https://www.javacodeexamples.com/java-hashmap-get-key-from-value-example/2318
      *
-     * @param <K>
-     * @param <V>
      * @param map
      * @param value
      * @return
      */
-    private static <K, V> K getKeyFromValue(Map<K, V> map, Object value) {
+    private static int getKeyFromValue(Map<Integer, String> map, String value) {
         //get all map keys using keySet method
-        Set<K> keys = map.keySet();
+        Set<Integer> keys = map.keySet();
 
         //iterate all keys
-        for (K key : keys) {
+        for (int key : keys) {
             //if maps value for the current key matches, return the key
             if (map.get(key).equals(value)) {
                 return key;
             }
         }
-        //if no values matches, return null
-        return null;
+        //if no values matches, return -1 -> throws exception
+        return -1;
     }
 
     /**
@@ -220,15 +271,28 @@ public class MainController {
      * dateOfPayment fields.
      */
     private void updateList() {
-        String specificPayment = getPaymentDescriptionValue() + " - " + getDateOfPayment();
+        String specificPayment = getPaymentDescriptionValue() + " - "
+                + payer.getValue().getName() + ", Data: " + getDateOfPayment();
 
         if (!observablePaymentList.contains(specificPayment)) {
-            observablePaymentList.add(getPaymentDescriptionValue() + " - " + getDateOfPayment());
+            observablePaymentList.add(getPaymentDescriptionValue() + " - "
+                    + payer.getValue().getName() + ", Data: " + getDateOfPayment());
             paymentListView.setItems(observablePaymentList);
             assignIdToPayment.put(paymentID, specificPayment);
         } else {
             showAlertBox("Nazwa płatności nie może się powtarzać!");
         }
+    }
+
+    private void updateDeductList() {
+        String specificPayment = getPaymentDescriptionValueDeduct() + " - "
+                + payerDeduct.getValue().getName();
+
+        observableDeductList.add(getPaymentDescriptionValueDeduct() + " - "
+                + payerDeduct.getValue().getName());
+        deductListView.setItems(observableDeductList);
+//            assignIdToPayment.put(paymentID, specificPayment);
+
     }
 
     /**
@@ -254,6 +318,7 @@ public class MainController {
     private void getPayers() {
         if (AddMemberController.getMemberList() != null) {
             payer.getItems().addAll(AddMemberController.getMemberList());
+            payerDeduct.getItems().addAll(AddMemberController.getMemberList());
             memberList = AddMemberController.getMemberList();
 
             System.out.println(AddMemberController.getMemberList().toString());
@@ -283,6 +348,14 @@ public class MainController {
         return longPaymentDescriptionValue;
     }
 
+    public String getPaymentDescriptionValueDeduct() {
+        return paymentDescriptionValueDeduct;
+    }
+
+    public void setPaymentDescriptionValueDeduct(String paymentDescriptionValueDeduct) {
+        this.paymentDescriptionValueDeduct = paymentDescriptionValueDeduct;
+    }
+
     public void setLongPaymentDescriptionValue(String longPaymentDescriptionValue) {
         this.longPaymentDescriptionValue = longPaymentDescriptionValue;
     }
@@ -293,5 +366,13 @@ public class MainController {
 
     public void setMoneyValueValue(float moneyValueValue) {
         this.moneyValueValue = moneyValueValue;
+    }
+
+    public float getMoneyValueValueDeduct() {
+        return moneyValueValueDeduct;
+    }
+
+    public void setMoneyValueValueDeduct(float moneyValueValueDeduct) {
+        this.moneyValueValueDeduct = moneyValueValueDeduct;
     }
 }
