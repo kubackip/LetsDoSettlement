@@ -50,7 +50,7 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <DatePicker fx:id="dateOfPayment" layoutX="19.0" layoutY="300.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="236.0" promptText="dd/mm/yyyy" />
+            <DatePicker fx:id="dateOfPayment" editable="false" layoutX="19.0" layoutY="300.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="236.0" promptText="dd/mm/yyyy" />
             <TextArea fx:id="longPaymentDescription" layoutX="19.0" layoutY="377.0" prefHeight="169.0" prefWidth="236.0" wrapText="true">
                <font>
                   <Font size="11.0" />

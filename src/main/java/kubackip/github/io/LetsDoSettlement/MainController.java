@@ -136,14 +136,15 @@ public class MainController {
                 moneyValueDeduct.getText());
         setMoneyValueValueDeduct(valueFromMoneyValueTextField);
 
-        deductedPayment = new DeductedPayments(getPaymentDescriptionValueDeduct(),
+        deductedPayment = new DeductedPayments(
+                getPaymentDescriptionValueDeduct(),
                 getMoneyValueValueDeduct(),
-                 paymentID,
+                paymentID,
                 payerDeduct.getValue().getId());
 
         deductedPaymentList.add(deductedPayment);
         System.out.println(deductedPaymentList);
-        
+
         paymentDescriptionDeduct.clear();
         moneyValueDeduct.clear();
         updateDeductList();
@@ -223,6 +224,12 @@ public class MainController {
             if (assignIdToPayment.containsValue(specificPayment)) {
                 mapKeyValue = getKeyFromValue(assignIdToPayment, specificPayment);
                 System.out.println(paymentList.get(mapKeyValue));
+
+                for (int i = 0; i < deductedPaymentList.size(); i++) {
+                    if (deductedPaymentList.get(i).getPaymentID() == mapKeyValue) {
+                        System.out.println(deductedPaymentList.get(i));
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 /home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/App.java
 /home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/Payment.java
-/home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/AddMemberController.java
 /home/samson/Programming/Java/LetsDoSettlement/src/main/java/module-info.java
 /home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/Members.java
-/home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/MainController.java
+/home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/controllers/AddMemberController.java
+/home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/DeductedPayments.java
+/home/samson/Programming/Java/LetsDoSettlement/src/main/java/kubackip/github/io/LetsDoSettlement/controllers/MainController.java

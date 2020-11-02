@@ -1,7 +1,8 @@
-kubackip/github/io/LetsDoSettlement/MainController.class
+kubackip/github/io/LetsDoSettlement/DeductedPayments.class
+kubackip/github/io/LetsDoSettlement/controllers/AddMemberController.class
 module-info.class
-kubackip/github/io/LetsDoSettlement/MainController$1.class
+kubackip/github/io/LetsDoSettlement/controllers/MainController$1.class
 kubackip/github/io/LetsDoSettlement/App.class
+kubackip/github/io/LetsDoSettlement/controllers/MainController.class
 kubackip/github/io/LetsDoSettlement/Payment.class
 kubackip/github/io/LetsDoSettlement/Members.class
-kubackip/github/io/LetsDoSettlement/AddMemberController.class
