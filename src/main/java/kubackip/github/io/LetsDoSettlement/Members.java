@@ -11,7 +11,7 @@ public class Members {
         this.secondName = secondName;
         this.id = id;
     }
-    
+
     public Members() {
     }
 
@@ -41,6 +41,7 @@ public class Members {
 
     @Override
     public String toString() {
-        return "Member " + getId() + ": " + getName() + " " + getSecondName();
+//        return "Member " + getId() + ": " + getName() + " " + getSecondName();
+        return getName() + " " + getSecondName();
     }
 }

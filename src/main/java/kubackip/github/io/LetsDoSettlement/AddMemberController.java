@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 
 public class AddMemberController implements Initializable {
 
-    private int id;
+    private int id = 0;
     private static List<Members> membersList = new ArrayList<>();
 
     @FXML
@@ -41,7 +41,7 @@ public class AddMemberController implements Initializable {
 
     @FXML
     private void backToMain(ActionEvent event) throws IOException {
-        App.setRoot("main");
+        App.setRoot("unauthorised");
     }
 
     @FXML
@@ -53,7 +53,6 @@ public class AddMemberController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 //        membersList = new ArrayList<>();
-        this.id = 0;
     }
 
     public static List<Members> getMemberList() {

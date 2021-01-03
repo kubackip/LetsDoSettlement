@@ -61,6 +61,10 @@ public class Payment {
         this.paymentID = id;
     }
 
+    public int getPayerID() {
+        return payerID;
+    }
+
     @Override
     public String toString() {
         return "Payment{" + "name=" + name + ", description=" + description

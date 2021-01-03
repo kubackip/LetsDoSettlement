@@ -14,7 +14,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("main"));
+        scene = new Scene(loadFXML("unauthorised"));
 
         stage.setTitle("Let's do a Settlement");
         stage.setScene(scene);

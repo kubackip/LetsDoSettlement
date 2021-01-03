@@ -23,7 +23,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
-public class MainController {
+/**
+ *
+ * @author samson
+ */
+public class UnauthorisedController {
 
     // Value that comes from text field
     private String paymentDescriptionValue;
@@ -31,7 +35,7 @@ public class MainController {
     private String longPaymentDescriptionValue;
     private float moneyValueValue;
     private float moneyValueValueDeduct;
-    private int paymentID;
+    private int paymentID = 0;
 
     private Payment payment;
     private DeductedPayments deductedPayment;
@@ -42,6 +46,12 @@ public class MainController {
     private Map<Integer, String> assignIdToPayment = new HashMap<>();
     private ObservableList<String> observablePaymentList;
     private ObservableList<String> observableDeductList;
+
+    private int pairId = 0;
+    private Map<Integer, String> pairs = new HashMap<>();
+    private static float[] pairsSettlement;
+    private boolean pairMapCreated = false;
+    StringBuilder pairOfObjects = new StringBuilder();
 
     @FXML
     private ListView<String> paymentListView;
@@ -74,6 +84,9 @@ public class MainController {
     private ListView<String> deductListView;
 
     // Needed for adding values to ListView
+    /**
+     *
+     */
     @FXML
     public void initialize() {
         // returns new ArrayList
@@ -83,7 +96,6 @@ public class MainController {
         paymentListView.setItems(observablePaymentList);
         deductListView.setItems(observableDeductList);
 
-        this.paymentID = 0;
         getPayers();
     }
 
@@ -97,19 +109,16 @@ public class MainController {
         String valueFromDescriptionTextField = paymentDescription.getText();
         setPaymentDescriptionValue(valueFromDescriptionTextField);
         String valueFromLongDescriptionTextField = longPaymentDescription.getText();
-        setLongPaymentDescriptionValue(
-                valueFromLongDescriptionTextField);
-        float valueFromMoneyValueTextField = getValueFromStringToFloat(
-                moneyValue.getText());
+        setLongPaymentDescriptionValue(valueFromLongDescriptionTextField);
+        float valueFromMoneyValueTextField = getValueFromStringToFloat(moneyValue.getText());
         setMoneyValueValue(valueFromMoneyValueTextField);
 
         String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
 
-        if (valueFromDescriptionTextField.length() > 0
-                && valueFromMoneyValueTextField != 0.00) {
+        // to trzeba koniecznie zmienić w przyszłości (to jest taki biedaFormatter)
+        if (valueFromDescriptionTextField.length() > 0 && valueFromMoneyValueTextField != 0.00) {
             if (observablePaymentList.contains(valueName)) {
-                showAlertBox("Płatność o takiej nazwie już istanieje, "
-                        + "proszę wybrac inną nazwę!");
+                showAlertBox("Płatność o takiej nazwie już istanieje, " + "proszę wybrac inną nazwę!");
             } else {
                 payment = new Payment(
                         getPaymentDescriptionValue(),
@@ -123,6 +132,19 @@ public class MainController {
 
                 clearAllTheTextFields();
                 updateList();
+
+                // Map can be created only once
+                if (!pairMapCreated) {
+                    boolean[] usedBoolean = new boolean[memberList.size()];
+
+                    pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+                    subset(memberList, 2, 0, 0, usedBoolean);
+
+                    pairMapCreated = true;
+                }
+                updatePairsSettlement(payment);
+                showPairSettlementTable();
+
                 paymentID++;
             }
         }
@@ -328,7 +350,8 @@ public class MainController {
             payerDeduct.getItems().addAll(AddMemberController.getMemberList());
             memberList = AddMemberController.getMemberList();
 
-            System.out.println(AddMemberController.getMemberList().toString());
+//            System.out.println(AddMemberController.getMemberList().toString());
+            System.out.println(memberList.toString());
         }
     }
 
@@ -336,50 +359,218 @@ public class MainController {
         return Float.parseFloat(value);
     }
 
+    private void subset(List<Members> data, int k, int start, int currentLength, boolean[] used) {
+        if (currentLength == k) {
+            for (int i = 0; i < data.size(); i++) {
+                if (used[i] == true) {
+                    System.out.println(data.get(i).toString());
+                    pairOfObjects.append(data.get(i).getId());
+                }
+            }
+            System.out.println("PairId: " + pairId);
+            System.out.println("Objects id:" + pairOfObjects);
+            pairs.put(pairId, pairOfObjects.toString());
+            pairId++;
+            pairOfObjects.delete(0, 2);
+
+            System.out.println("");
+            return;
+        }
+        if (start == data.size()) {
+            return;
+        }
+
+//        For every index we have two options,
+//        1... Either we select it, means put true in used[] and make currentLength+1
+        used[start] = true;
+        subset(data, k, start + 1, currentLength + 1, used);
+//        2... or we dont select it, means put false in used[] and dont increase currentLength
+        used[start] = false;
+        subset(data, k, start + 1, currentLength, used);
+    }
+
+    private void updatePairsSettlement(Payment p) {
+        // find payer
+        System.out.println("ID Osoby płacącej: " + p.getPayerID());
+
+        //find all payment pairs 
+        whoHasToMakeSettlement(p.getPayerID());
+    }
+
+    /**
+     * PayerID is int, so we have to convert String to int, using
+     * Integer.parseInt(String s).
+     */
+    private void whoHasToMakeSettlement(int payerID) {
+        String payer = String.valueOf(payerID);
+
+        System.out.println("\nKeys of pairs Map:");
+        for (Map.Entry<Integer, String> entry : pairs.entrySet()) {
+            Integer key = entry.getKey();
+            String value = entry.getValue();
+
+            if (value.contains(payer)) {
+                System.out.println("Key:" + key);
+                System.out.println("Value: " + value);
+                updateTable(key, value, payer);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param key
+     * @param mapValue
+     * @param payer
+     */
+    private void updateTable(int key, String mapValue, String payer) {
+        if (mapValue.startsWith(payer)) {
+            pairsSettlement[key] += moneyValueValue;
+            System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+//            if (pairsSettlement[key] > 0) {
+//                System.out.println("Osoba o ID = " + mapValue.charAt(1) + " musi oddać osobie o ID = "
+//                        + mapValue.charAt(0) + " " + (pairsSettlement[key] / 2) + " złotych");
+//            } else if (pairsSettlement[key] < 0) {
+//                System.out.println("Osoba o ID = " + mapValue.charAt(1) + " musi oddać osobie o ID = "
+//                        + mapValue.charAt(0) + " " + -(pairsSettlement[key] / 2) + " złotych");
+//            } else {
+//                System.out.println("Nikt nikomy nie jest nic winny!");
+//            }
+        } else if (mapValue.endsWith(payer)) {
+            pairsSettlement[key] -= moneyValueValue;
+            System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+//            if (pairsSettlement[key] > 0) {
+//                System.out.println("Osoba o ID = " + mapValue.charAt(0) + " musi oddać osobie o ID = "
+//                        + mapValue.charAt(1) + " " + (pairsSettlement[key] / 2) + " złotych");
+//            } else if (pairsSettlement[key] < 0) {
+//                System.out.println("Osoba o ID = " + mapValue.charAt(0) + " musi oddać osobie o ID = "
+//                        + mapValue.charAt(1) + " " + -(pairsSettlement[key] / 2) + " złotych");
+//            } else {
+//                System.out.println("Nikt nikomy nie jest nic winny!");
+//            }
+        }
+    }
+
+    private int numberOfCombinations(int n, int k) {
+//        int c = calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
+//        return c;
+        return calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
+    }
+
+    private int calculateFactorial(int number) {
+        int factorial = 1;
+        for (int i = 1; i < number; i++) {
+            factorial *= i;
+        }
+        return factorial;
+    }
+
+    private void showPairSettlementTable() {
+        System.out.println("\nJak się rozkładają płatności na poszczególne pary:");
+
+        for (int i = 0; i < pairsSettlement.length; i++) {
+            System.out.println(pairsSettlement[i]);
+
+            if (pairsSettlement[i] > 0) {
+                System.out.println("Osoba o ID = " + pairs.get(i).charAt(1) + " musi oddać osobie o ID = "
+                        + pairs.get(i).charAt(0) + " " + (pairsSettlement[i] / 2) + " złotych");
+            } else if (pairsSettlement[i] < 0) {
+                System.out.println("Osoba o ID = " + pairs.get(i).charAt(0) + " musi oddać osobie o ID = "
+                        + pairs.get(i).charAt(1) + " " + -(pairsSettlement[i] / 2) + " złotych");
+            } else {
+                System.out.println("Nikt nikomy nie jest nic winny!");
+            }
+        }
+
+    }
+
     /**
      * Getters & Setters
+     *
+     * @return
      */
     public String getPaymentDescriptionValue() {
         return paymentDescriptionValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDateOfPayment() {
         return dateOfPayment.getValue().toString();
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPaymentDescriptionValue(String value) {
         this.paymentDescriptionValue = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLongPaymentDescriptionValue() {
         return longPaymentDescriptionValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPaymentDescriptionValueDeduct() {
         return paymentDescriptionValueDeduct;
     }
 
+    /**
+     *
+     * @param paymentDescriptionValueDeduct
+     */
     public void setPaymentDescriptionValueDeduct(String paymentDescriptionValueDeduct) {
         this.paymentDescriptionValueDeduct = paymentDescriptionValueDeduct;
     }
 
+    /**
+     *
+     * @param longPaymentDescriptionValue
+     */
     public void setLongPaymentDescriptionValue(String longPaymentDescriptionValue) {
         this.longPaymentDescriptionValue = longPaymentDescriptionValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getMoneyValueValue() {
         return moneyValueValue;
     }
 
+    /**
+     *
+     * @param moneyValueValue
+     */
     public void setMoneyValueValue(float moneyValueValue) {
         this.moneyValueValue = moneyValueValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getMoneyValueValueDeduct() {
         return moneyValueValueDeduct;
     }
 
+    /**
+     *
+     * @param moneyValueValueDeduct
+     */
     public void setMoneyValueValueDeduct(float moneyValueValueDeduct) {
         this.moneyValueValueDeduct = moneyValueValueDeduct;
     }
+
 }
