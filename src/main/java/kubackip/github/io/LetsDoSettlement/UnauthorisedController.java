@@ -48,10 +48,14 @@ public class UnauthorisedController {
     private ObservableList<String> observableDeductList;
 
     private int pairId = 0;
-    private Map<Integer, String> pairs = new HashMap<>();
+    private Map<Integer, String> pairsOfPayers = new HashMap<>();
     private static float[] pairsSettlement;
+    private static float[] pairsDeductedSettlement;
     private boolean pairMapCreated = false;
     StringBuilder pairOfObjects = new StringBuilder();
+
+    // Deducted payments
+    private float sumOfDeductedPayments;
 
     @FXML
     private ListView<String> paymentListView;
@@ -69,13 +73,13 @@ public class UnauthorisedController {
     private ChoiceBox<Members> payer;
 
     @FXML
+    private ChoiceBox<Members> payerDeduct;
+
+    @FXML
     private TextArea longPaymentDescription;
 
     @FXML
     private TextField paymentDescriptionDeduct;
-
-    @FXML
-    private ChoiceBox<Members> payerDeduct;
 
     @FXML
     private TextField moneyValueDeduct;
@@ -116,7 +120,7 @@ public class UnauthorisedController {
         String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
 
         // to trzeba koniecznie zmienić w przyszłości (to jest taki biedaFormatter)
-        if (valueFromDescriptionTextField.length() > 0 && valueFromMoneyValueTextField != 0.00) {
+        if (valueFromDescriptionTextField.length() > 0 && valueFromMoneyValueTextField > 0.00) {
             if (observablePaymentList.contains(valueName)) {
                 showAlertBox("Płatność o takiej nazwie już istanieje, " + "proszę wybrac inną nazwę!");
             } else {
@@ -129,6 +133,7 @@ public class UnauthorisedController {
                         payer.getValue().getId());
 
                 paymentList.add(payment);
+                System.out.println(paymentList);
 
                 clearAllTheTextFields();
                 updateList();
@@ -143,7 +148,7 @@ public class UnauthorisedController {
                     pairMapCreated = true;
                 }
                 updatePairsSettlement(payment);
-                showPairSettlementTable();
+                showPairsSettlement();
 
                 paymentID++;
             }
@@ -156,15 +161,21 @@ public class UnauthorisedController {
         setPaymentDescriptionValueDeduct(valueFromDescriptionTextFieldDeduct);
         float valueFromMoneyValueTextField = getValueFromStringToFloat(
                 moneyValueDeduct.getText());
+
+        sumOfDeductedPayments += valueFromMoneyValueTextField;
+//        setMoneyValueValueDeduct(sumOfDeductedPayments);
         setMoneyValueValueDeduct(valueFromMoneyValueTextField);
+        setSumOfDeductedPayments(sumOfDeductedPayments);
 
         deductedPayment = new DeductedPayments(
                 getPaymentDescriptionValueDeduct(),
                 getMoneyValueValueDeduct(),
                 paymentID,
+                payer.getValue().getId(),
                 payerDeduct.getValue().getId());
 
         deductedPaymentList.add(deductedPayment);
+        pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
         System.out.println(deductedPaymentList);
 
         paymentDescriptionDeduct.clear();
@@ -256,6 +267,7 @@ public class UnauthorisedController {
         }
     }
 
+    // Formatter do dokończenia - mozna zrobić formatowanie po zakończeniu śledzenia pola
     private void formatTextFieldWithMoneyValue(TextField field) {
         String fieldValueGetText = field.getText();
 
@@ -278,7 +290,7 @@ public class UnauthorisedController {
      *
      * @param map
      * @param value
-     * @return
+     * @return key value
      */
     private static int getKeyFromValue(Map<Integer, String> map, String value) {
         //get all map keys using keySet method
@@ -314,13 +326,12 @@ public class UnauthorisedController {
     }
 
     private void updateDeductList() {
-        String specificPayment = getPaymentDescriptionValueDeduct() + " - "
-                + payerDeduct.getValue().getName();
+//        String specificPayment = getPaymentDescriptionValueDeduct() + " - "
+//                + payerDeduct.getValue().getName();
 
         observableDeductList.add(getPaymentDescriptionValueDeduct() + " - "
                 + payerDeduct.getValue().getName());
         deductListView.setItems(observableDeductList);
-//            assignIdToPayment.put(paymentID, specificPayment);
 
     }
 
@@ -350,7 +361,6 @@ public class UnauthorisedController {
             payerDeduct.getItems().addAll(AddMemberController.getMemberList());
             memberList = AddMemberController.getMemberList();
 
-//            System.out.println(AddMemberController.getMemberList().toString());
             System.out.println(memberList.toString());
         }
     }
@@ -369,7 +379,7 @@ public class UnauthorisedController {
             }
             System.out.println("PairId: " + pairId);
             System.out.println("Objects id:" + pairOfObjects);
-            pairs.put(pairId, pairOfObjects.toString());
+            pairsOfPayers.put(pairId, pairOfObjects.toString());
             pairId++;
             pairOfObjects.delete(0, 2);
 
@@ -398,62 +408,33 @@ public class UnauthorisedController {
     }
 
     /**
-     * PayerID is int, so we have to convert String to int, using
+     * payerID is an int, so we have to convert String to int, using
      * Integer.parseInt(String s).
      */
     private void whoHasToMakeSettlement(int payerID) {
         String payer = String.valueOf(payerID);
 
         System.out.println("\nKeys of pairs Map:");
-        for (Map.Entry<Integer, String> entry : pairs.entrySet()) {
+        for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
             Integer key = entry.getKey();
             String value = entry.getValue();
 
             if (value.contains(payer)) {
                 System.out.println("Key:" + key);
                 System.out.println("Value: " + value);
-                updateTable(key, value, payer);
+                // Updating pairsSettlement[] table                
+                if (value.startsWith(payer)) {
+                    pairsSettlement[key] += getMoneyValueValue() - getSumOfDeductedPayments();
+                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+                } else if (value.endsWith(payer)) {
+                    pairsSettlement[key] -= getMoneyValueValue() - getSumOfDeductedPayments();
+                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+                }
             }
         }
     }
 
-    /**
-     *
-     * @param key
-     * @param mapValue
-     * @param payer
-     */
-    private void updateTable(int key, String mapValue, String payer) {
-        if (mapValue.startsWith(payer)) {
-            pairsSettlement[key] += moneyValueValue;
-            System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
-//            if (pairsSettlement[key] > 0) {
-//                System.out.println("Osoba o ID = " + mapValue.charAt(1) + " musi oddać osobie o ID = "
-//                        + mapValue.charAt(0) + " " + (pairsSettlement[key] / 2) + " złotych");
-//            } else if (pairsSettlement[key] < 0) {
-//                System.out.println("Osoba o ID = " + mapValue.charAt(1) + " musi oddać osobie o ID = "
-//                        + mapValue.charAt(0) + " " + -(pairsSettlement[key] / 2) + " złotych");
-//            } else {
-//                System.out.println("Nikt nikomy nie jest nic winny!");
-//            }
-        } else if (mapValue.endsWith(payer)) {
-            pairsSettlement[key] -= moneyValueValue;
-            System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
-//            if (pairsSettlement[key] > 0) {
-//                System.out.println("Osoba o ID = " + mapValue.charAt(0) + " musi oddać osobie o ID = "
-//                        + mapValue.charAt(1) + " " + (pairsSettlement[key] / 2) + " złotych");
-//            } else if (pairsSettlement[key] < 0) {
-//                System.out.println("Osoba o ID = " + mapValue.charAt(0) + " musi oddać osobie o ID = "
-//                        + mapValue.charAt(1) + " " + -(pairsSettlement[key] / 2) + " złotych");
-//            } else {
-//                System.out.println("Nikt nikomy nie jest nic winny!");
-//            }
-        }
-    }
-
     private int numberOfCombinations(int n, int k) {
-//        int c = calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
-//        return c;
         return calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
     }
 
@@ -465,23 +446,22 @@ public class UnauthorisedController {
         return factorial;
     }
 
-    private void showPairSettlementTable() {
+    private void showPairsSettlement() {
         System.out.println("\nJak się rozkładają płatności na poszczególne pary:");
 
         for (int i = 0; i < pairsSettlement.length; i++) {
             System.out.println(pairsSettlement[i]);
 
             if (pairsSettlement[i] > 0) {
-                System.out.println("Osoba o ID = " + pairs.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairs.get(i).charAt(0) + " " + (pairsSettlement[i] / 2) + " złotych");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(0) + " " + (pairsSettlement[i] / 2) + " złotych");
             } else if (pairsSettlement[i] < 0) {
-                System.out.println("Osoba o ID = " + pairs.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairs.get(i).charAt(1) + " " + -(pairsSettlement[i] / 2) + " złotych");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(1) + " " + -(pairsSettlement[i] / 2) + " złotych");
             } else {
                 System.out.println("Nikt nikomy nie jest nic winny!");
             }
         }
-
     }
 
     /**
@@ -573,4 +553,11 @@ public class UnauthorisedController {
         this.moneyValueValueDeduct = moneyValueValueDeduct;
     }
 
+    private void setSumOfDeductedPayments(float sumOfDeductedPayments) {
+        this.sumOfDeductedPayments = sumOfDeductedPayments;
+    }
+
+    public float getSumOfDeductedPayments() {
+        return sumOfDeductedPayments;
+    }
 }

@@ -6,12 +6,14 @@ public class DeductedPayments {
     private float value;
     private int paymentID;
     private int payerID;
+    private int deductPayerID;
 
-    public DeductedPayments(String name, float value, int paymentID, int payerID) {
+    public DeductedPayments(String name, float value, int paymentID, int payerID, int deductPayerID) {
         this.name = name;
         this.value = value;
         this.paymentID = paymentID;
         this.payerID = payerID;
+        this.deductPayerID = deductPayerID;
     }
 
     public String getName() {
@@ -46,9 +48,18 @@ public class DeductedPayments {
         this.payerID = payerID;
     }
 
+    public int getDeductPayerID() {
+        return deductPayerID;
+    }
+
+    public void setDeductPayerID(int deductPayerID) {
+        this.deductPayerID = deductPayerID;
+    }
+
     @Override
     public String toString() {
         return "DeductedPayments{" + "name=" + name + ", value=" + value
-                + ", paymentID=" + paymentID + ", payerID=" + payerID + '}';
+                + ", paymentID=" + paymentID + ", payerID=" + payerID + ", deductPayerID= "
+                + deductPayerID + '}';
     }
 }
