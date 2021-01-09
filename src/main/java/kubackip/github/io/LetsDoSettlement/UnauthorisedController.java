@@ -454,10 +454,10 @@ public class UnauthorisedController {
 
             if (pairsSettlement[i] > 0) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " " + (pairsSettlement[i] / 2) + " złotych");
+                        + pairsOfPayers.get(i).charAt(0) + " " + (pairsSettlement[i] /  memberList.size()) + " złotych");
             } else if (pairsSettlement[i] < 0) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " " + -(pairsSettlement[i] / 2) + " złotych");
+                        + pairsOfPayers.get(i).charAt(1) + " " + -(pairsSettlement[i] / memberList.size()) + " złotych");
             } else {
                 System.out.println("Nikt nikomy nie jest nic winny!");
             }
