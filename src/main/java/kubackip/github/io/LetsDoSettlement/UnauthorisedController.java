@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import javafx.collections.FXCollections;
@@ -87,10 +89,6 @@ public class UnauthorisedController {
     @FXML
     private ListView<String> deductListView;
 
-    // Needed for adding values to ListView
-    /**
-     *
-     */
     @FXML
     public void initialize() {
         // returns new ArrayList
@@ -101,6 +99,16 @@ public class UnauthorisedController {
         deductListView.setItems(observableDeductList);
 
         getPayers();
+        // Map can be created only once
+        if (!pairMapCreated && AddMemberController.getMemberList() != null) {
+            boolean[] usedBoolean = new boolean[memberList.size()];
+
+            pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+            pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+            subset(memberList, 2, 0, 0, usedBoolean);
+
+            pairMapCreated = true;
+        }
     }
 
     /**
@@ -133,23 +141,28 @@ public class UnauthorisedController {
                         payer.getValue().getId());
 
                 paymentList.add(payment);
-                System.out.println(paymentList);
 
                 clearAllTheTextFields();
                 updateList();
 
-                // Map can be created only once
-                if (!pairMapCreated) {
-                    boolean[] usedBoolean = new boolean[memberList.size()];
-
-                    pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
-                    subset(memberList, 2, 0, 0, usedBoolean);
-
-                    pairMapCreated = true;
-                }
+//                // Map can be created only once
+//                if (!pairMapCreated) {
+//                    boolean[] usedBoolean = new boolean[memberList.size()];
+//
+//                    pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+//                    pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+//                    subset(memberList, 2, 0, 0, usedBoolean);
+//
+//                    pairMapCreated = true;
+//                }
                 updatePairsSettlement(payment);
                 showPairsSettlement();
 
+//                System.out.println("Moja mapa:");
+//                for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
+//                    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+//                }
+                sumOfDeductedPayments = 0;
                 paymentID++;
             }
         }
@@ -159,13 +172,17 @@ public class UnauthorisedController {
     private void addDeductedPayment(ActionEvent event) {
         String valueFromDescriptionTextFieldDeduct = paymentDescriptionDeduct.getText();
         setPaymentDescriptionValueDeduct(valueFromDescriptionTextFieldDeduct);
-        float valueFromMoneyValueTextField = getValueFromStringToFloat(
+        float valueFromMoneyValueDeductTextField = getValueFromStringToFloat(
                 moneyValueDeduct.getText());
 
-        sumOfDeductedPayments += valueFromMoneyValueTextField;
+        sumOfDeductedPayments += valueFromMoneyValueDeductTextField;
 //        setMoneyValueValueDeduct(sumOfDeductedPayments);
-        setMoneyValueValueDeduct(valueFromMoneyValueTextField);
+        setMoneyValueValueDeduct(valueFromMoneyValueDeductTextField);
         setSumOfDeductedPayments(sumOfDeductedPayments);
+
+        if (getSumOfDeductedPayments() > getValueFromStringToFloat(moneyValue.getText())) {
+            System.out.println("Błąd: Suma odliczonych płatności przewyższa wartość zakupów");
+        }
 
         deductedPayment = new DeductedPayments(
                 getPaymentDescriptionValueDeduct(),
@@ -175,64 +192,44 @@ public class UnauthorisedController {
                 payerDeduct.getValue().getId());
 
         deductedPaymentList.add(deductedPayment);
-        pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
         System.out.println(deductedPaymentList);
 
         paymentDescriptionDeduct.clear();
         moneyValueDeduct.clear();
+
+        moneyToDeduct();
         updateDeductList();
     }
 
-    /**
-     * Converting data format to dd-MM-yyyy
-     *
-     * Code of converter taken from
-     * https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.
-     * html
-     */
-    @FXML
-    private void formatDatePicker(ActionEvent event) {
-        String pattern = "dd-MM-yyyy";
+    private void moneyToDeduct() {
+        int personWhoIsPayer = payer.getValue().getId();
+        int personWhoShouldDeductMoney = payerDeduct.getValue().getId();
+        int key = -1;
+        String members = "";
 
-        dateOfPayment.setPromptText(pattern.toLowerCase());
-        dateOfPayment.setConverter(new StringConverter<LocalDate>() {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+        if (personWhoIsPayer < personWhoShouldDeductMoney) {
+            members = String.valueOf(personWhoIsPayer) + String.valueOf(personWhoShouldDeductMoney);
+            key = getKeyFromValue(pairsOfPayers, members);
+            System.out.println("key: " + key);
+            pairsDeductedSettlement[key] += getMoneyValueValueDeduct();
+        } else if (personWhoIsPayer > personWhoShouldDeductMoney) {
+            members = String.valueOf(personWhoShouldDeductMoney) + String.valueOf(personWhoIsPayer);
+            key = getKeyFromValue(pairsOfPayers, members);
+            System.out.println("key: " + key);
+            pairsDeductedSettlement[key] -= getMoneyValueValueDeduct();
+        }
 
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
+        for (float f : pairsDeductedSettlement) {
+            System.out.println("f: " + f);
+        }
     }
 
     /**
-     * Formatting input in moneyValue Text Field.
+     * Allow to change root fxml, that shows on the screen.
      *
      * @param event
+     * @throws IOException
      */
-    @FXML
-    private void formatMoneyValue(ActionEvent event) {
-        formatTextFieldWithMoneyValue(moneyValue);
-    }
-
-    @FXML
-    private void formatMoneyValueDeduct(ActionEvent event) {
-        formatTextFieldWithMoneyValue(moneyValueDeduct);
-    }
-
     @FXML
     private void setAddMemberAsRoot(ActionEvent event) throws IOException {
         App.setRoot("addMember");
@@ -267,6 +264,40 @@ public class UnauthorisedController {
         }
     }
 
+    /**
+     * Convert data format to day-month-year
+     *
+     * Code of converter taken from
+     * https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.html
+     */
+    @FXML
+    private void formatDatePicker(ActionEvent event) {
+        String pattern = "dd-MM-yyyy";
+
+        dateOfPayment.setPromptText(pattern.toLowerCase());
+        dateOfPayment.setConverter(new StringConverter<LocalDate>() {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+
     // Formatter do dokończenia - mozna zrobić formatowanie po zakończeniu śledzenia pola
     private void formatTextFieldWithMoneyValue(TextField field) {
         String fieldValueGetText = field.getText();
@@ -285,6 +316,21 @@ public class UnauthorisedController {
     }
 
     /**
+     * Formatting input in moneyValue Text Field.
+     *
+     * @param event
+     */
+    @FXML
+    private void formatMoneyValue(ActionEvent event) {
+        formatTextFieldWithMoneyValue(moneyValue);
+    }
+
+    @FXML
+    private void formatMoneyValueDeduct(ActionEvent event) {
+        formatTextFieldWithMoneyValue(moneyValueDeduct);
+    }
+
+    /**
      * The example of how to get key from value using Map is taken from
      * https://www.javacodeexamples.com/java-hashmap-get-key-from-value-example/2318
      *
@@ -292,7 +338,7 @@ public class UnauthorisedController {
      * @param value
      * @return key value
      */
-    private static int getKeyFromValue(Map<Integer, String> map, String value) {
+    public static int getKeyFromValue(Map<Integer, String> map, String value) {
         //get all map keys using keySet method
         Set<Integer> keys = map.keySet();
 
@@ -326,13 +372,9 @@ public class UnauthorisedController {
     }
 
     private void updateDeductList() {
-//        String specificPayment = getPaymentDescriptionValueDeduct() + " - "
-//                + payerDeduct.getValue().getName();
-
         observableDeductList.add(getPaymentDescriptionValueDeduct() + " - "
                 + payerDeduct.getValue().getName());
         deductListView.setItems(observableDeductList);
-
     }
 
     /**
@@ -361,7 +403,7 @@ public class UnauthorisedController {
             payerDeduct.getItems().addAll(AddMemberController.getMemberList());
             memberList = AddMemberController.getMemberList();
 
-            System.out.println(memberList.toString());
+//            System.out.println(memberList.toString());
         }
     }
 
@@ -373,28 +415,27 @@ public class UnauthorisedController {
         if (currentLength == k) {
             for (int i = 0; i < data.size(); i++) {
                 if (used[i] == true) {
-                    System.out.println(data.get(i).toString());
+                    //Display members
+//                    System.out.println(data.get(i).toString());
                     pairOfObjects.append(data.get(i).getId());
                 }
             }
-            System.out.println("PairId: " + pairId);
-            System.out.println("Objects id:" + pairOfObjects);
+//            System.out.println("PairId: " + pairId);
+//            System.out.println("Objects id:" + pairOfObjects);
             pairsOfPayers.put(pairId, pairOfObjects.toString());
             pairId++;
             pairOfObjects.delete(0, 2);
-
-            System.out.println("");
             return;
         }
         if (start == data.size()) {
             return;
         }
 
-//        For every index we have two options,
-//        1... Either we select it, means put true in used[] and make currentLength+1
+        //For every index we have two options,
+        //1... Either we select it, means put true in used[] and make currentLength+1
         used[start] = true;
         subset(data, k, start + 1, currentLength + 1, used);
-//        2... or we dont select it, means put false in used[] and dont increase currentLength
+        //2... or we dont select it, means put false in used[] and dont increase currentLength
         used[start] = false;
         subset(data, k, start + 1, currentLength, used);
     }
@@ -414,21 +455,21 @@ public class UnauthorisedController {
     private void whoHasToMakeSettlement(int payerID) {
         String payer = String.valueOf(payerID);
 
-        System.out.println("\nKeys of pairs Map:");
+//        System.out.println("\nKeys of pairs Map:");
         for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
             Integer key = entry.getKey();
             String value = entry.getValue();
 
             if (value.contains(payer)) {
-                System.out.println("Key:" + key);
-                System.out.println("Value: " + value);
+//                System.out.println("Key:" + key);
+//                System.out.println("Value: " + value);
                 // Updating pairsSettlement[] table                
                 if (value.startsWith(payer)) {
                     pairsSettlement[key] += getMoneyValueValue() - getSumOfDeductedPayments();
-                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+//                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
                 } else if (value.endsWith(payer)) {
                     pairsSettlement[key] -= getMoneyValueValue() - getSumOfDeductedPayments();
-                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
+//                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
                 }
             }
         }
@@ -450,14 +491,34 @@ public class UnauthorisedController {
         System.out.println("\nJak się rozkładają płatności na poszczególne pary:");
 
         for (int i = 0; i < pairsSettlement.length; i++) {
-            System.out.println(pairsSettlement[i]);
+            System.out.println("pairsSettlement[" + i + "]: " + pairsSettlement[i]);
+            System.out.println("pairsSettlement[" + i + "] / memberList.size():" + (pairsSettlement[i] / memberList.size()));
+            System.out.println("pairsDeductedSettlement[" + i + "]: " + pairsDeductedSettlement[i]);
 
-            if (pairsSettlement[i] > 0) {
+            if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
+                System.out.println("Numer 0 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " " + (pairsSettlement[i] /  memberList.size()) + " złotych");
-            } else if (pairsSettlement[i] < 0) {
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+            } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) >= (-pairsDeductedSettlement[i])) {
+                System.out.println("Numer 1 aktywuje się!");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+            } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) < (-pairsDeductedSettlement[i])) {
+                System.out.println("Numer 2 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " " + -(pairsSettlement[i] / memberList.size()) + " złotych");
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] <= 0) {
+                System.out.println("Numer 3 aktywuje się!");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) >= pairsDeductedSettlement[i]) {
+                System.out.println("Numer 4 aktywuje się!");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) < pairsDeductedSettlement[i]) {
+                System.out.println("Numer 5 aktywuje się!");
+                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else {
                 System.out.println("Nikt nikomy nie jest nic winny!");
             }

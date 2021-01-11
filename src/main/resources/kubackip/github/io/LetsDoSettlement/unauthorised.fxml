@@ -15,121 +15,112 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox
-  maxHeight="1.7976931348623157E308"
-  maxWidth="1.7976931348623157E308"
-  minHeight="300.0"
-  minWidth="450.0"
-  prefHeight="600.0"
-  prefWidth="900.0"
-  xmlns="http://javafx.com/javafx/11.0.1"
-  xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="kubackip.github.io.LetsDoSettlement.UnauthorisedController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="450.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kubackip.github.io.LetsDoSettlement.UnauthorisedController">
   <children>
     <MenuBar>
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#setAddMemberAsRoot" text="Create Members"/>
+            <MenuItem mnemonicParsing="false" onAction="#setAddMemberAsRoot" text="Create Members" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
-            <MenuItem mnemonicParsing="false" text="Clear All"/>
-            <MenuItem mnemonicParsing="false" text="Choose Theme"/>
+            <MenuItem mnemonicParsing="false" text="Clear All" />
+            <MenuItem mnemonicParsing="false" text="Choose Theme" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
     <AnchorPane prefHeight="578.0" prefWidth="900.0">
       <children>
-        <ChoiceBox fx:id="payer" layoutX="19.0" layoutY="86.0" prefHeight="26.0" prefWidth="236.0"/>
+        <ChoiceBox fx:id="payer" layoutX="19.0" layoutY="86.0" prefHeight="26.0" prefWidth="236.0" />
         <TextField fx:id="paymentDescription" layoutX="19.0" layoutY="150.0" prefHeight="42.0" prefWidth="236.0">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
         <TextField fx:id="moneyValue" layoutX="19.0" layoutY="222.0" onAction="#formatMoneyValue" prefHeight="42.0" prefWidth="236.0" promptText="[PLN]">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
-        <DatePicker fx:id="dateOfPayment" editable="false" layoutX="19.0" layoutY="300.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="236.0" promptText="dd/mm/yyyy"/>
+        <DatePicker fx:id="dateOfPayment" editable="false" layoutX="19.0" layoutY="300.0" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="236.0" promptText="dd/mm/yyyy" />
         <TextArea fx:id="longPaymentDescription" layoutX="19.0" layoutY="377.0" prefHeight="169.0" prefWidth="236.0" wrapText="true">
-          <font>
-            <Font size="11.0"/>
-          </font>
+               <font>
+                  <Font size="14.0" />
+               </font>
         </TextArea>
-        <Button layoutX="529.0" layoutY="506.0" mnemonicParsing="false" onAction="#addToPaymentList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność"/>
+        <Button layoutX="529.0" layoutY="506.0" mnemonicParsing="false" onAction="#addToPaymentList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" />
         <Label layoutX="19.0" layoutY="61.0" text="Kto płacił">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="19.0" layoutY="125.0" text="Opis płatności">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="19.0" layoutY="193.0" prefHeight="29.0" prefWidth="113.0" text="Kwota">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="19.0" layoutY="271.0" prefHeight="29.0" prefWidth="179.0" text="Wybierz datę płatności">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="19.0" layoutY="350.0" text="Opis płatności">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
-        <ListView fx:id="paymentListView" layoutX="529.0" layoutY="18.0" prefHeight="473.0" prefWidth="357.0"/>
-        <Separator layoutX="263.0" layoutY="33.0" orientation="VERTICAL" prefHeight="320.0" prefWidth="6.0"/>
+        <ListView fx:id="paymentListView" layoutX="529.0" layoutY="18.0" prefHeight="473.0" prefWidth="357.0" />
+        <Separator layoutX="263.0" layoutY="33.0" orientation="VERTICAL" prefHeight="320.0" prefWidth="6.0" />
         <Label layoutX="279.0" layoutY="14.0" text="Zakupy odliczane od płatności">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="109.0" layoutY="14.0" text="Zakupy">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
         <Label layoutX="279.0" layoutY="125.0" text="Co kupił/a dla siebie">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
-        <ChoiceBox fx:id="payerDeduct" layoutX="279.0" layoutY="86.0" prefHeight="26.0" prefWidth="236.0"/>
+        <ChoiceBox fx:id="payerDeduct" layoutX="279.0" layoutY="86.0" prefHeight="26.0" prefWidth="236.0" />
         <TextField fx:id="paymentDescriptionDeduct" layoutX="279.0" layoutY="150.0" prefHeight="42.0" prefWidth="236.0">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
         <TextField fx:id="moneyValueDeduct" layoutX="279.0" layoutY="223.0" onAction="#formatMoneyValueDeduct" prefHeight="42.0" prefWidth="236.0" promptText="[PLN]">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
-        <ListView fx:id="deductListView" layoutX="279.0" layoutY="277.0" prefHeight="169.0" prefWidth="236.0"/>
+        <ListView fx:id="deductListView" layoutX="279.0" layoutY="277.0" prefHeight="169.0" prefWidth="236.0" />
         <Label layoutX="279.0" layoutY="61.0" text="Osoba">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
-        <Button layoutX="744.0" layoutY="506.0" mnemonicParsing="false" onAction="#showPaymentDetails" prefHeight="42.0" prefWidth="142.0" text="Pokaż szczegóły"/>
-        <Button layoutX="312.0" layoutY="459.0" mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="26.0" prefWidth="170.0" text="Odlicz od całej kwoty"/>
+        <Button layoutX="744.0" layoutY="506.0" mnemonicParsing="false" onAction="#showPaymentDetails" prefHeight="42.0" prefWidth="142.0" text="Pokaż szczegóły" />
+        <Button layoutX="312.0" layoutY="459.0" mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="26.0" prefWidth="170.0" text="Odlicz od całej kwoty" />
         <Label layoutX="279.0" layoutY="193.0" prefHeight="29.0" prefWidth="113.0" text="Kwota">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
         </Label>
       </children>
