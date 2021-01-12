@@ -14,20 +14,19 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Plik">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#backToMain" text="Back To Main Window"/>
+            <MenuItem mnemonicParsing="false" onAction="#backToMain" text="Powrót do głównego okna" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
+        <Menu mnemonicParsing="false" text="Edycja">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#clearAllTheTextFields" text="Clear All"/>
-            <MenuItem mnemonicParsing="false" text="Choose Theme"/>
+            <MenuItem mnemonicParsing="false" onAction="#clearAllTheTextFields" text="Wyczyść wszystkie pola" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu mnemonicParsing="false" text="Pomoc">
           <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
+            <MenuItem mnemonicParsing="false" text="Jak używać aplikacji" />
           </items>
         </Menu>
       </menus>
@@ -36,17 +35,17 @@
       <children>
         <TextField fx:id="nameTextField" layoutX="27.0" layoutY="51.0" prefHeight="42.0" prefWidth="592.0">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
         <TextField fx:id="secondNameTextField" layoutX="27.0" layoutY="144.0" prefHeight="42.0" prefWidth="592.0">
           <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
           </font>
         </TextField>
-        <Button fx:id="addMemberButton" layoutX="198.0" layoutY="255.0" mnemonicParsing="false" onAction="#addMember" prefHeight="42.0" prefWidth="244.0" text="Dodaj użytkownika"/>
-        <Label layoutX="27.0" layoutY="24.0" prefHeight="16.0" prefWidth="91.0" text="Podaj Imię"/>
-        <Label layoutX="27.0" layoutY="120.0" prefHeight="16.0" prefWidth="139.0" text="Podaj Nazwisko"/>
+        <Button fx:id="addMemberButton" layoutX="198.0" layoutY="255.0" mnemonicParsing="false" onAction="#addMember" prefHeight="42.0" prefWidth="244.0" text="Dodaj użytkownika" />
+        <Label layoutX="27.0" layoutY="24.0" prefHeight="16.0" prefWidth="91.0" text="Podaj Imię" />
+        <Label layoutX="27.0" layoutY="120.0" prefHeight="16.0" prefWidth="139.0" text="Podaj Nazwisko" />
       </children>
     </AnchorPane>
   </children>

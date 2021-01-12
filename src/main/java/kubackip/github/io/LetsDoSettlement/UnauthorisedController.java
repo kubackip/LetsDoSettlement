@@ -16,13 +16,16 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
 /**
@@ -90,8 +93,25 @@ public class UnauthorisedController {
     private ListView<String> deductListView;
 
     @FXML
+    private Label showPayer;
+
+    @FXML
+    private Label showPaymentName;
+
+    @FXML
+    private Label showPaymentValue;
+
+    @FXML
+    private Label showPaymentDate;
+
+    @FXML
+    private Label showPaymentDescription;
+
+    /**
+     * Create observable lists for payment and deducted payment
+     */
+    @FXML
     public void initialize() {
-        // returns new ArrayList
         observablePaymentList = FXCollections.observableArrayList();
         observableDeductList = FXCollections.observableArrayList();
 
@@ -127,7 +147,6 @@ public class UnauthorisedController {
 
         String valueName = getPaymentDescriptionValue() + " - " + getDateOfPayment();
 
-        // to trzeba koniecznie zmienić w przyszłości (to jest taki biedaFormatter)
         if (valueFromDescriptionTextField.length() > 0 && valueFromMoneyValueTextField > 0.00) {
             if (observablePaymentList.contains(valueName)) {
                 showAlertBox("Płatność o takiej nazwie już istanieje, " + "proszę wybrac inną nazwę!");
@@ -145,23 +164,9 @@ public class UnauthorisedController {
                 clearAllTheTextFields();
                 updateList();
 
-//                // Map can be created only once
-//                if (!pairMapCreated) {
-//                    boolean[] usedBoolean = new boolean[memberList.size()];
-//
-//                    pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
-//                    pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
-//                    subset(memberList, 2, 0, 0, usedBoolean);
-//
-//                    pairMapCreated = true;
-//                }
                 updatePairsSettlement(payment);
                 showPairsSettlement();
 
-//                System.out.println("Moja mapa:");
-//                for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
-//                    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-//                }
                 sumOfDeductedPayments = 0;
                 paymentID++;
             }
@@ -176,7 +181,7 @@ public class UnauthorisedController {
                 moneyValueDeduct.getText());
 
         sumOfDeductedPayments += valueFromMoneyValueDeductTextField;
-//        setMoneyValueValueDeduct(sumOfDeductedPayments);
+
         setMoneyValueValueDeduct(valueFromMoneyValueDeductTextField);
         setSumOfDeductedPayments(sumOfDeductedPayments);
 
@@ -246,19 +251,28 @@ public class UnauthorisedController {
     }
 
     @FXML
-    private void showPaymentDetails(ActionEvent event) {
-        if (paymentListView.getSelectionModel().getSelectedItem() != null) {
-            String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
-            int mapKeyValue;
+    private void showPaymentDetails(MouseEvent event) {
 
-            if (assignIdToPayment.containsValue(specificPayment)) {
-                mapKeyValue = getKeyFromValue(assignIdToPayment, specificPayment);
-                System.out.println(paymentList.get(mapKeyValue));
+        String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
+//        System.out.println(specificPayment);
+        int mapKeyValue;
 
-                for (int i = 0; i < deductedPaymentList.size(); i++) {
-                    if (deductedPaymentList.get(i).getPaymentID() == mapKeyValue) {
-                        System.out.println(deductedPaymentList.get(i));
-                    }
+        if (assignIdToPayment.containsValue(specificPayment)) {
+            mapKeyValue = getKeyFromValue(assignIdToPayment, specificPayment);
+            System.out.println(paymentList.get(mapKeyValue));
+
+            int payerId = paymentList.get(mapKeyValue).getPayerID();
+            String paymentValue = String.valueOf(paymentList.get(mapKeyValue).getValue());
+
+            showPayer.setText(memberList.get(mapKeyValue).getName() + " " + memberList.get(mapKeyValue).getSecondName());
+            showPaymentName.setText(paymentList.get(mapKeyValue).getName());
+            showPaymentValue.setText(paymentValue);
+            showPaymentDate.setText(paymentList.get(mapKeyValue).getDate().format(DateTimeFormatter.ISO_DATE));
+            showPaymentDescription.setText(paymentList.get(mapKeyValue).getDescription());
+
+            for (int i = 0; i < deductedPaymentList.size(); i++) {
+                if (deductedPaymentList.get(i).getPaymentID() == mapKeyValue) {
+                    System.out.println(deductedPaymentList.get(i));
                 }
             }
         }
@@ -402,8 +416,6 @@ public class UnauthorisedController {
             payer.getItems().addAll(AddMemberController.getMemberList());
             payerDeduct.getItems().addAll(AddMemberController.getMemberList());
             memberList = AddMemberController.getMemberList();
-
-//            System.out.println(memberList.toString());
         }
     }
 
@@ -416,12 +428,9 @@ public class UnauthorisedController {
             for (int i = 0; i < data.size(); i++) {
                 if (used[i] == true) {
                     //Display members
-//                    System.out.println(data.get(i).toString());
                     pairOfObjects.append(data.get(i).getId());
                 }
             }
-//            System.out.println("PairId: " + pairId);
-//            System.out.println("Objects id:" + pairOfObjects);
             pairsOfPayers.put(pairId, pairOfObjects.toString());
             pairId++;
             pairOfObjects.delete(0, 2);
@@ -455,21 +464,16 @@ public class UnauthorisedController {
     private void whoHasToMakeSettlement(int payerID) {
         String payer = String.valueOf(payerID);
 
-//        System.out.println("\nKeys of pairs Map:");
         for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
             Integer key = entry.getKey();
             String value = entry.getValue();
 
             if (value.contains(payer)) {
-//                System.out.println("Key:" + key);
-//                System.out.println("Value: " + value);
                 // Updating pairsSettlement[] table                
                 if (value.startsWith(payer)) {
                     pairsSettlement[key] += getMoneyValueValue() - getSumOfDeductedPayments();
-//                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
                 } else if (value.endsWith(payer)) {
                     pairsSettlement[key] -= getMoneyValueValue() - getSumOfDeductedPayments();
-//                    System.out.println("pairsSettlement[" + key + "]: " + pairsSettlement[key]);
                 }
             }
         }
@@ -479,7 +483,12 @@ public class UnauthorisedController {
         return calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
     }
 
-    private int calculateFactorial(int number) {
+    /**
+     *
+     * @param number
+     * @return factorial
+     */
+    public int calculateFactorial(int number) {
         int factorial = 1;
         for (int i = 1; i < number; i++) {
             factorial *= i;
