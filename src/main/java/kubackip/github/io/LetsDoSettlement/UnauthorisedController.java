@@ -254,7 +254,6 @@ public class UnauthorisedController {
     private void showPaymentDetails(MouseEvent event) {
 
         String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
-//        System.out.println(specificPayment);
         int mapKeyValue;
 
         if (assignIdToPayment.containsValue(specificPayment)) {
@@ -264,7 +263,7 @@ public class UnauthorisedController {
             int payerId = paymentList.get(mapKeyValue).getPayerID();
             String paymentValue = String.valueOf(paymentList.get(mapKeyValue).getValue());
 
-            showPayer.setText(memberList.get(mapKeyValue).getName() + " " + memberList.get(mapKeyValue).getSecondName());
+            showPayer.setText(memberList.get(payerId).getName() + " " + memberList.get(mapKeyValue).getSecondName());
             showPaymentName.setText(paymentList.get(mapKeyValue).getName());
             showPaymentValue.setText(paymentValue);
             showPaymentDate.setText(paymentList.get(mapKeyValue).getDate().format(DateTimeFormatter.ISO_DATE));

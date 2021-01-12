@@ -63,7 +63,7 @@
                                     <Font size="15.0" />
                                   </font>
                                 </Label>
-                                <ChoiceBox fx:id="payer" prefHeight="26.0" prefWidth="289.0">
+                                <ChoiceBox fx:id="payer" prefHeight="26.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -73,7 +73,7 @@
                                     <Font size="15.0" />
                                   </font>
                                 </Label>
-                                <TextField fx:id="paymentDescription" prefHeight="42.0" prefWidth="275.0">
+                                <TextField fx:id="paymentDescription" prefHeight="42.0">
                                   <font>
                                     <Font size="14.0" />
                                   </font>
@@ -93,7 +93,7 @@
                                     <Font size="15.0" />
                                   </font>
                                 </Label>
-                                <DatePicker fx:id="dateOfPayment" editable="false" onAction="#formatDatePicker" prefHeight="42.0" prefWidth="289.0" promptText="Wybierz datę">
+                                <DatePicker fx:id="dateOfPayment" editable="false" onAction="#formatDatePicker" prefHeight="42.0" promptText="Wybierz datę">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -103,7 +103,7 @@
                                     <Font size="15.0" />
                                   </font>
                                 </Label>
-                                <TextArea fx:id="longPaymentDescription" prefHeight="169.0" prefWidth="275.0" wrapText="true">
+                                <TextArea fx:id="longPaymentDescription" prefHeight="169.0" wrapText="true">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -123,59 +123,66 @@
                   <content>
                     <AnchorPane>
                            <children>
-                          <Label alignment="CENTER" layoutY="34.0" text="Zakupy odliczane od płatności" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
-                            <font>
-                              <Font size="15.0" />
-                            </font>
-                          </Label>
-                          <Label layoutX="30.0" layoutY="126.0" text="Co kupił/a dla siebie" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                            <font>
-                              <Font size="15.0" />
-                            </font>
-                          </Label>
-                          <ChoiceBox fx:id="payerDeduct" layoutX="30.0" layoutY="85.0" prefHeight="26.0" prefWidth="236.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ChoiceBox>
-                          <TextField fx:id="paymentDescriptionDeduct" layoutX="30.0" layoutY="145.0" prefHeight="42.0" prefWidth="236.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                            <font>
-                              <Font size="14.0" />
-                            </font>
-                          </TextField>
-                          <TextField fx:id="moneyValueDeduct" layoutX="30.0" layoutY="219.0" onAction="#formatMoneyValueDeduct" prefHeight="42.0" prefWidth="236.0" promptText="[PLN]" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                            <font>
-                              <Font size="14.0" />
-                            </font>
-                          </TextField>
-                          <ListView fx:id="deductListView" layoutX="30.0" layoutY="328.0" prefHeight="233.0" prefWidth="289.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
-                          <Label layoutX="30.0" layoutY="65.0" text="Osoba" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="65.0">
-                            <font>
-                              <Font size="15.0" />
-                            </font>
-                          </Label>
-                          <Button layoutX="30.0" layoutY="596.0" mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="26.0" prefWidth="170.0" text="Odlicz od całej kwoty" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </Button>
-                          <Label layoutX="30.0" layoutY="200.0" prefWidth="113.0" text="Kwota" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                            <font>
-                              <Font size="15.0" />
-                            </font>
-                          </Label>
-                              <Label layoutX="30.0" layoutY="309.0" prefWidth="113.0" text="Odliczenia">
-                                 <font>
+                              <VBox layoutX="30.0" layoutY="30.0" spacing="10.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+                                 <children>
+                                <Label alignment="CENTER" prefHeight="29.0" prefWidth="289.0" text="Zakupy odliczane od płatności">
+                                  <font>
                                     <Font size="15.0" />
-                                 </font>
-                              </Label>
+                                  </font>
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                </Label>
+                                <Label text="Osoba">
+                                  <font>
+                                    <Font size="15.0" />
+                                  </font>
+                                </Label>
+                                <ChoiceBox fx:id="payerDeduct" prefHeight="26.0">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ChoiceBox>
+                                <Label text="Co kupił/a dla siebie">
+                                  <font>
+                                    <Font size="15.0" />
+                                  </font>
+                                </Label>
+                                <TextField fx:id="paymentDescriptionDeduct" prefHeight="42.0">
+                                  <font>
+                                    <Font size="14.0" />
+                                  </font>
+                                </TextField>
+                                <Label prefWidth="113.0" text="Kwota">
+                                  <font>
+                                    <Font size="15.0" />
+                                  </font>
+                                </Label>
+                                <TextField fx:id="moneyValueDeduct" onAction="#formatMoneyValueDeduct" prefHeight="42.0" promptText="[PLN]">
+                                  <font>
+                                    <Font size="14.0" />
+                                  </font>
+                                </TextField>
+                                    <Label prefWidth="113.0" text="Odliczenia">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                <ListView fx:id="deductListView" prefHeight="233.0" />
+                                <Button mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="42.0" prefWidth="170.0" text="Odlicz od całej kwoty">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Button>
+                                 </children>
+                              </VBox>
                            </children>
                         </AnchorPane>
                   </content>
                 </Tab>
               </tabs>
             </TabPane>
-          <AnchorPane prefHeight="699.0" prefWidth="444.0">
+          <AnchorPane prefHeight="699.0" prefWidth="390.0">
             <children>
               <ListView fx:id="paymentListView" layoutX="40.0" layoutY="40.0" onMouseClicked="#showPaymentDetails" prefHeight="251.0" prefWidth="331.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0" />
                   <VBox layoutX="30.0" layoutY="290.0" spacing="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
@@ -187,7 +194,7 @@
                         </Label>
                         <Label fx:id="showPayer" prefHeight="19.0" prefWidth="360.0">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="System Italic" size="15.0" />
                            </font>
                         </Label>
                         <Label text="Nazwa płatności:">
@@ -225,7 +232,7 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="showPaymentDescription" alignment="TOP_LEFT" prefHeight="120.0" prefWidth="360.0">
+                        <Label fx:id="showPaymentDescription" alignment="TOP_LEFT" prefHeight="107.0" prefWidth="323.0">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
