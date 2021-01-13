@@ -102,7 +102,10 @@ public class UnauthorisedController {
     private Label showPaymentDate;
 
     @FXML
-    private Label showPaymentDescription;
+    private Label showSettlementMember;
+
+    @FXML
+    private Label showSettlementValue;
 
     /**
      * Create observable lists for payment and deducted payment
@@ -264,13 +267,19 @@ public class UnauthorisedController {
             showPaymentName.setText(paymentList.get(mapKeyValue).getName());
             showPaymentValue.setText(paymentValue);
             showPaymentDate.setText(paymentList.get(mapKeyValue).getDate().format(DateTimeFormatter.ISO_DATE));
-            showPaymentDescription.setText(paymentList.get(mapKeyValue).getDescription());
+
+            StringBuilder deductPayer = new StringBuilder("");
+            StringBuilder deductValue = new StringBuilder("");
 
             for (int i = 0; i < deductedPaymentList.size(); i++) {
                 if (deductedPaymentList.get(i).getPaymentID() == mapKeyValue) {
-                    System.out.println(deductedPaymentList.get(i));
+                    deductPayer.append(memberList.get(deductedPaymentList.get(i).getDeductPayerID()).getName()
+                            + " " + memberList.get(deductedPaymentList.get(i).getDeductPayerID()).getSecondName() + "\n");
+                    deductValue.append(String.valueOf(deductedPaymentList.get(i).getValue()) + "\n");
                 }
             }
+            showSettlementMember.setText(deductPayer.toString());
+            showSettlementValue.setText(deductValue.toString());
         }
     }
 
@@ -501,27 +510,21 @@ public class UnauthorisedController {
             System.out.println("pairsDeductedSettlement[" + i + "]: " + pairsDeductedSettlement[i]);
 
             if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
-                System.out.println("Numer 0 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) >= (-pairsDeductedSettlement[i])) {
-                System.out.println("Numer 1 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) < (-pairsDeductedSettlement[i])) {
-                System.out.println("Numer 2 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] <= 0) {
-                System.out.println("Numer 3 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) >= pairsDeductedSettlement[i]) {
-                System.out.println("Numer 4 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) < pairsDeductedSettlement[i]) {
-                System.out.println("Numer 5 aktywuje się!");
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
                         + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
             } else {
