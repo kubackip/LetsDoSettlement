@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kubackip.github.io.LetsDoSettlement.AddMemberController">
+<VBox prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kubackip.github.io.LetsDoSettlement.AddMemberController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -31,21 +31,25 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="271.0" prefWidth="640.0">
       <children>
-        <TextField fx:id="nameTextField" layoutX="27.0" layoutY="51.0" prefHeight="42.0" prefWidth="592.0">
-          <font>
-            <Font size="14.0" />
-          </font>
-        </TextField>
-        <TextField fx:id="secondNameTextField" layoutX="27.0" layoutY="144.0" prefHeight="42.0" prefWidth="592.0">
-          <font>
-            <Font size="14.0" />
-          </font>
-        </TextField>
-        <Button fx:id="addMemberButton" layoutX="198.0" layoutY="255.0" mnemonicParsing="false" onAction="#addMember" prefHeight="42.0" prefWidth="244.0" text="Dodaj użytkownika" />
-        <Label layoutX="27.0" layoutY="24.0" prefHeight="16.0" prefWidth="91.0" text="Podaj Imię" />
-        <Label layoutX="27.0" layoutY="120.0" prefHeight="16.0" prefWidth="139.0" text="Podaj Nazwisko" />
+            <VBox layoutX="27.0" layoutY="24.0" prefHeight="157.0" prefWidth="580.0" spacing="10.0" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+               <children>
+              <Label prefHeight="16.0" prefWidth="91.0" text="Podaj Imię" />
+              <TextField fx:id="nameTextField" prefHeight="42.0" prefWidth="592.0">
+                <font>
+                  <Font size="14.0" />
+                </font>
+              </TextField>
+              <Label prefHeight="16.0" prefWidth="139.0" text="Podaj Nazwisko" />
+              <TextField fx:id="secondNameTextField" prefHeight="42.0" prefWidth="592.0">
+                <font>
+                  <Font size="14.0" />
+                </font>
+              </TextField>
+               </children>
+            </VBox>
+        <Button fx:id="addMemberButton" alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="201.0" mnemonicParsing="false" onAction="#addMember" prefHeight="42.0" prefWidth="240.0" text="Dodaj użytkownika" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="201.0" />
       </children>
     </AnchorPane>
   </children>

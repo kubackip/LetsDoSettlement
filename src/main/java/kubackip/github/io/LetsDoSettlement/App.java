@@ -10,19 +10,25 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    private static Stage stage;
     private static Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
         scene = new Scene(loadFXML("unauthorised"));
 
-        stage.setTitle("Let's do a Settlement");
-        stage.setScene(scene);
-        stage.show();
+        this.stage.setHeight(740);
+        this.stage.setWidth(750);
+        this.stage.setTitle("Let's do a Settlement");
+        this.stage.setScene(scene);
+        this.stage.show();
     }
 
-    static void setRoot(String fxml) throws IOException {
+    static void setRoot(String fxml, double height, double width) throws IOException {
         scene.setRoot(loadFXML(fxml));
+        stage.setHeight(height);
+        stage.setWidth(width);
     }
 
     private static Parent loadFXML(String fxml) throws IOException {

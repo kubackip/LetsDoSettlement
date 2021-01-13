@@ -237,7 +237,7 @@ public class UnauthorisedController {
      */
     @FXML
     private void setAddMemberAsRoot(ActionEvent event) throws IOException {
-        App.setRoot("addMember");
+        App.setRoot("addMember", 320, 640);
     }
 
     @FXML

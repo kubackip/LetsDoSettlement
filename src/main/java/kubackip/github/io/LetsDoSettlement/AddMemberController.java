@@ -41,7 +41,7 @@ public class AddMemberController implements Initializable {
 
     @FXML
     private void backToMain(ActionEvent event) throws IOException {
-        App.setRoot("unauthorised");
+        App.setRoot("unauthorised", 740, 750);
     }
 
     @FXML

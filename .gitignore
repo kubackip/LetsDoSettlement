@@ -1,10 +1,11 @@
-### NetBeans ###
-**/nbproject/private/
-**/nbproject/Makefile-*.mk
-**/nbproject/Package-*.bash
+nbproject/private/
 build/
 nbbuild/
 dist/
 nbdist/
-.nb-gradle/
+nbactions.xml
+nb-configuration.xml
+.classpath
+.project
+.settings/
 target/
