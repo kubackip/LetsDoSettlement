@@ -1,10 +1,9 @@
 kubackip/github/io/LetsDoSettlement/UnauthorisedController$1.class
 kubackip/github/io/LetsDoSettlement/DeductedPayments.class
+kubackip/github/io/LetsDoSettlement/PopUpWindowController.class
 module-info.class
-kubackip/github/io/LetsDoSettlement/interfaces/SettlementInterface.class
 kubackip/github/io/LetsDoSettlement/UnauthorisedController.class
 kubackip/github/io/LetsDoSettlement/App.class
-kubackip/github/io/LetsDoSettlement/Settlement.class
 kubackip/github/io/LetsDoSettlement/Payment.class
 kubackip/github/io/LetsDoSettlement/AddMemberController.class
 kubackip/github/io/LetsDoSettlement/Members.class
