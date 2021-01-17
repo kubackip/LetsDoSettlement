@@ -15,6 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -23,6 +26,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
@@ -42,18 +46,19 @@ public class UnauthorisedController {
     private Payment payment;
     private DeductedPayments deductedPayment;
 
-    private List<Members> memberList = new ArrayList<>();
-    private List<Payment> paymentList = new ArrayList<>();
-    private List<DeductedPayments> deductedPaymentList = new ArrayList<>();
-    private Map<Integer, String> assignIdToPayment = new HashMap<>();
+    private static List<Members> memberList = new ArrayList<>();
+    private static List<Payment> paymentList = new ArrayList<>();
+    private static List<DeductedPayments> deductedPaymentList = new ArrayList<>();
+    private static Map<Integer, String> assignIdToPayment = new HashMap<>();
+    private static Map<Integer, String> pairsOfPayers = new HashMap<>();
     private ObservableList<String> observablePaymentList;
     private ObservableList<String> observableDeductList;
 
     private int pairId = 0;
-    private Map<Integer, String> pairsOfPayers = new HashMap<>();
     private static float[] pairsSettlement;
     private static float[] pairsDeductedSettlement;
     private boolean pairMapCreated = false;
+    private boolean popupWindowOpened = false;
     StringBuilder pairOfObjects = new StringBuilder();
 
     // Deducted payments
@@ -123,8 +128,12 @@ public class UnauthorisedController {
         if (!pairMapCreated && AddMemberController.getMemberList() != null) {
             boolean[] usedBoolean = new boolean[memberList.size()];
 
+            System.out.println("memberList size: " + memberList.size());
             pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+            System.out.println("pairsSettlement length: " + pairsSettlement.length);
+            
             pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
+            System.out.println("pairsDeductedSettlement length: " + pairsDeductedSettlement.length);
             subset(memberList, 2, 0, 0, usedBoolean);
 
             pairMapCreated = true;
@@ -484,8 +493,8 @@ public class UnauthorisedController {
         }
     }
 
-    private int numberOfCombinations(int n, int k) {
-        return calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k));
+    public int numberOfCombinations(int n, int k) {
+        return (calculateFactorial(n) / (calculateFactorial(k) * calculateFactorial(n - k)));
     }
 
     /**
@@ -495,7 +504,7 @@ public class UnauthorisedController {
      */
     public int calculateFactorial(int number) {
         int factorial = 1;
-        for (int i = 1; i < number; i++) {
+        for (int i = 1; i <= number; i++) {
             factorial *= i;
         }
         return factorial;
@@ -530,6 +539,36 @@ public class UnauthorisedController {
             } else {
                 System.out.println("Nikt nikomy nie jest nic winny!");
             }
+        }
+    }
+
+    /**
+     * showAndWait() method shows the Stage object and then blocks (stays inside
+     * the showAndWait() method) until the Stage is closed.
+     *
+     * @param event
+     */
+    @FXML
+    private void showSettlementWindow(ActionEvent event) {
+        try {
+            if (!popupWindowOpened) {
+                popupWindowOpened = true;
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("popupwindow.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/kubackip/github/io/LetsDoSettlement/popupwindow.fxml"));
+                Parent root = (Parent) loader.load();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setWidth(600);
+                stage.setHeight(640);
+                stage.showAndWait();
+
+                if (!stage.isShowing()) {
+                    popupWindowOpened = false;
+                }
+            }
+        } catch (IOException ex) {
+            System.err.println(ex);
+            System.err.println("Can't load new window");
         }
     }
 
@@ -629,4 +668,29 @@ public class UnauthorisedController {
     public float getSumOfDeductedPayments() {
         return sumOfDeductedPayments;
     }
+
+    public static List<Members> getMemberList() {
+        return memberList;
+    }
+
+    public static List<Payment> getPaymentList() {
+        return paymentList;
+    }
+
+    public static List<DeductedPayments> getDeductedPaymentList() {
+        return deductedPaymentList;
+    }
+
+    public static Map<Integer, String> getPairsOfPayers() {
+        return pairsOfPayers;
+    }
+
+    public static float[] getPairsSettlement() {
+        return pairsSettlement;
+    }
+
+    public static float[] getPairsDeductedSettlement() {
+        return pairsDeductedSettlement;
+    }
+
 }

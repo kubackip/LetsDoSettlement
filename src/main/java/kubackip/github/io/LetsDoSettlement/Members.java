@@ -41,7 +41,6 @@ public class Members {
 
     @Override
     public String toString() {
-//        return "Member " + getId() + ": " + getName() + " " + getSecondName();
         return getName() + " " + getSecondName();
     }
 }

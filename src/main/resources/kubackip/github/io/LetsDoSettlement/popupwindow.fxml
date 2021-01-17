@@ -1,28 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kubackip.github.io.LetsDoSettlement.PopUpWindowController">
+<VBox prefHeight="600.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kubackip.github.io.LetsDoSettlement.PopUpWindowController">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="Plik">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Powrót do głównego okna" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edytuj" />
-        <Menu mnemonicParsing="false" text="Pomoc">
-          <items>
-            <MenuItem mnemonicParsing="false" text="O aplikacji" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-      <AnchorPane prefHeight="377.0" prefWidth="640.0" />
+      <VBox prefHeight="557.0" prefWidth="640.0">
+         <children>
+            <AnchorPane>
+               <children>
+                  <Label alignment="CENTER" text="Rozliczenia" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="190.0" prefWidth="640.0">
+               <children>
+                  <Label fx:id="showSettlement" prefHeight="170.0" prefWidth="600.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label alignment="CENTER" text="Dokładne dane płatności" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label fx:id="getPaymentAndDeductedPayment" prefHeight="297.0" prefWidth="600.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
   </children>
 </VBox>

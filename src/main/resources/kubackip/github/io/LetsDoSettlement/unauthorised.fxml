@@ -110,7 +110,7 @@
                                 </TextArea>
                                  </children>
                               </VBox>
-                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="117.0" layoutY="588.0" mnemonicParsing="false" onAction="#addToPaymentList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność">
+                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="117.0" layoutY="588.0" mnemonicParsing="false" onAction="#addToPaymentList" prefHeight="42.0" prefWidth="142.0" text="Dodaj płatność" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="110.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
@@ -123,7 +123,7 @@
                   <content>
                     <AnchorPane>
                            <children>
-                              <VBox layoutX="30.0" layoutY="30.0" spacing="10.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+                              <VBox layoutX="30.0" layoutY="30.0" prefHeight="539.0" prefWidth="319.0" spacing="10.0" AnchorPane.bottomAnchor="69.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
                                  <children>
                                 <Label alignment="CENTER" prefHeight="29.0" prefWidth="289.0" text="Zakupy odliczane od płatności">
                                   <font>
@@ -169,13 +169,13 @@
                                        </font>
                                     </Label>
                                 <ListView fx:id="deductListView" prefHeight="233.0" />
-                                <Button alignment="CENTER" mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="42.0" prefWidth="170.0" text="Odlicz od całej kwoty">
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
                                  </children>
                               </VBox>
+                          <Button alignment="CENTER" layoutX="105.0" layoutY="580.0" mnemonicParsing="false" onAction="#addDeductedPayment" prefHeight="40.0" prefWidth="170.0" text="Odlicz od całej kwoty" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
                            </children>
                         </AnchorPane>
                   </content>
@@ -184,7 +184,7 @@
             </TabPane>
           <AnchorPane prefHeight="699.0" prefWidth="375.0">
             <children>
-              <ListView fx:id="paymentListView" layoutX="40.0" layoutY="40.0" onMouseClicked="#showPaymentDetails" prefHeight="251.0" prefWidth="331.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0" />
+              <ListView fx:id="paymentListView" layoutX="40.0" layoutY="40.0" onMouseClicked="#showPaymentDetails" prefHeight="251.0" prefWidth="331.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="30.0" />
                   <VBox layoutX="30.0" layoutY="290.0" spacing="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
                      <children>
                         <Label text="Kto płacił:">
@@ -229,7 +229,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <VBox layoutX="30.0" layoutY="477.0" prefHeight="200.0" prefWidth="319.0">
+                  <VBox layoutX="30.0" layoutY="477.0" prefHeight="140.0" prefWidth="319.0">
                      <children>
                         <AnchorPane prefHeight="29.0" prefWidth="319.0">
                            <children>
@@ -249,7 +249,7 @@
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="showSettlementMember" alignment="TOP_CENTER" layoutY="19.0" lineSpacing="3.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+                                    <Label fx:id="showSettlementMember" alignment="TOP_CENTER" layoutY="19.0" lineSpacing="3.0" prefHeight="91.0" prefWidth="140.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>
@@ -274,6 +274,7 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <Button layoutX="125.0" layoutY="616.0" mnemonicParsing="false" onAction="#showSettlementWindow" prefHeight="40.0" text="Pokaż rozliczenie" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" />
             </children>
           </AnchorPane>
          </children>
