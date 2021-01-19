@@ -174,7 +174,7 @@ public class UnauthorisedController {
                 updateList();
 
                 updatePairsSettlement(payment);
-                showPairsSettlement();
+//                showPairsSettlement();
 
                 sumOfDeductedPayments = 0;
                 paymentID++;
@@ -520,22 +520,22 @@ public class UnauthorisedController {
 
             if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) >= (-pairsDeductedSettlement[i])) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) < (-pairsDeductedSettlement[i])) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] <= 0) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) >= pairsDeductedSettlement[i]) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) < pairsDeductedSettlement[i]) {
                 System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] złotych");
+                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
             } else {
                 System.out.println("Nikt nikomy nie jest nic winny!");
             }
@@ -553,13 +553,16 @@ public class UnauthorisedController {
         try {
             if (!popupWindowOpened) {
                 popupWindowOpened = true;
-//                FXMLLoader loader = new FXMLLoader(getClass().getResource("popupwindow.fxml"));
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/kubackip/github/io/LetsDoSettlement/popupwindow.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("popupwindow.fxml"));
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("/kubackip/github/io/LetsDoSettlement/popupwindow.fxml"));
                 Parent root = (Parent) loader.load();
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setWidth(600);
-                stage.setHeight(640);
+                stage.setHeight(580);
+                stage.setMaxHeight(620);
+                stage.setMaxWidth(650);
+                stage.setTitle("Rozliczenie");
                 stage.showAndWait();
 
                 if (!stage.isShowing()) {

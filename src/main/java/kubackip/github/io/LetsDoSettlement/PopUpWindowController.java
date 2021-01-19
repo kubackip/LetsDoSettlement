@@ -1,5 +1,6 @@
 package kubackip.github.io.LetsDoSettlement;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import javafx.fxml.FXML;
@@ -16,6 +17,9 @@ public class PopUpWindowController {
     private float[] pairsDeductedSettlement;
 
     StringBuilder settlement = new StringBuilder();
+    StringBuilder paymentDescription = new StringBuilder();
+
+    private int counter = 1;
 
     @FXML
     private Label showSettlement;
@@ -35,45 +39,11 @@ public class PopUpWindowController {
 
         pairsOfPayers = UnauthorisedController.getPairsOfPayers();
 
-        showIfItWorks();
         showSettlement();
         showSettlement.setText(settlement.toString());
-    }
 
-    private void showIfItWorks() {
-        System.out.println("Members:");
-        System.out.println(memberList.isEmpty());
-        for (Members m : memberList) {
-            System.out.println(m);
-        }
-
-        System.out.println("Deducted Payments:");
-        System.out.println(deductedPaymentList.isEmpty());
-        for (DeductedPayments p : deductedPaymentList) {
-            System.out.println(p);
-        }
-
-        System.out.println("Payment List");
-        System.out.println(paymentList.isEmpty());
-        for (Payment payment : paymentList) {
-            System.out.println(payment);
-        }
-
-        System.out.println("pairsSettlement:");
-        for (float f : pairsSettlement) {
-            System.out.println(f);
-        }
-
-        System.out.println("pairsDeductedSettlement:");
-        for (float f1 : pairsDeductedSettlement) {
-            System.out.println(f1);
-        }
-        System.out.println("pairsOfPayers");
-        for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
-            Integer key = entry.getKey();
-            String value = entry.getValue();
-            System.out.println("key: " + key + ", value: " + value);
-        }
+        showPaymentDescription();
+        getPaymentAndDeductedPayment.setText(paymentDescription.toString());
     }
 
     private void showSettlement() {
@@ -85,28 +55,59 @@ public class PopUpWindowController {
             System.out.println("i: " + i);
 
             if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " " + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString()
+                        + ": " + formatFloat((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) >= (-pairsDeductedSettlement[i])) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " " + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString()
+                        + ": " + formatFloat((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
             } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) < (-pairsDeductedSettlement[i])) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " " + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString()
+                        + ": " + formatFloat(-((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i])) + " złotych" + "\n");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] <= 0) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " " + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString()
+                        + ": " + formatFloat(-((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i])) + " złotych" + "\n");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) >= pairsDeductedSettlement[i]) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " " + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString()
+                        + ": " + formatFloat(-((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i])) + " złotych" + "\n");
             } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) < pairsDeductedSettlement[i]) {
-                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać: "
-                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString() + " " + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
+                settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać "
+                        + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString()
+                        + ": " + formatFloat((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + " złotych" + "\n");
             }
         }
     }
-    
-    private float formatFloat(float toFormat) {
-        return 0f;
+
+    public String formatFloat(float formatFloat) {
+        DecimalFormat deicmalFormat = new DecimalFormat("#.##");
+
+        return deicmalFormat.format(formatFloat);
+    }
+
+    private void showPaymentDescription() {
+        for (int i = 0; i < paymentList.size(); i++) {
+            paymentDescription.append("Zakupy nr." + counter + "\n\n");
+            paymentDescription.append("Kto płacił: " + memberList.get(paymentList.get(i).getPayerID()).toString() + "\n\n");
+            paymentDescription.append("Nazwa płatności: " + paymentList.get(i).getName() + "\n\n");
+            paymentDescription.append("Ile zapłacił: " + paymentList.get(i).getValue() + " PLN\n\n");
+            if (!paymentList.get(i).getDescription().isBlank()) {
+                paymentDescription.append("Dodatkowe informacje o płatności:" + paymentList.get(i).getDescription() + "\n\n");
+            }
+
+            for (int j = 0; j < deductedPaymentList.size(); j++) {
+                if (deductedPaymentList.get(j).getPaymentID() == i) {
+                    paymentDescription.append("Kto odliczył produkt od zakupów: "
+                            + memberList.get(deductedPaymentList.get(j).getDeductPayerID()).toString() + "\n\n");
+                    paymentDescription.append("Co odliczył: " + deductedPaymentList.get(j).getName() + "\n\n");
+                    paymentDescription.append("Ile to kosztowało: " + deductedPaymentList.get(j).getValue() + " PLN\n\n");
+                }
+            }
+            paymentDescription.append("==============================\n\n");
+            counter++;
+        }
     }
 }
