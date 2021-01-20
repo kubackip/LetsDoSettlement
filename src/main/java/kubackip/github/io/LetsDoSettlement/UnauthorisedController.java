@@ -131,7 +131,7 @@ public class UnauthorisedController {
             System.out.println("memberList size: " + memberList.size());
             pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
             System.out.println("pairsSettlement length: " + pairsSettlement.length);
-            
+
             pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
             System.out.println("pairsDeductedSettlement length: " + pairsDeductedSettlement.length);
             subset(memberList, 2, 0, 0, usedBoolean);
@@ -170,7 +170,7 @@ public class UnauthorisedController {
 
                 paymentList.add(payment);
 
-                clearAllTheTextFields();
+                clearAllFields();
                 updateList();
 
                 updatePairsSettlement(payment);
@@ -208,8 +208,10 @@ public class UnauthorisedController {
         deductedPaymentList.add(deductedPayment);
         System.out.println(deductedPaymentList);
 
-        paymentDescriptionDeduct.clear();
-        moneyValueDeduct.clear();
+//        paymentDescriptionDeduct.clear();
+//        moneyValueDeduct.clear();
+        clearTextFields(paymentDescriptionDeduct);
+        clearTextFields(moneyValueDeduct);
 
         moneyToDeduct();
         updateDeductList();
@@ -250,13 +252,25 @@ public class UnauthorisedController {
     }
 
     @FXML
-    private void clearAllTheTextFields() {
-        paymentDescription.clear();
-        moneyValue.clear();
-        longPaymentDescription.clear();
-        paymentDescriptionDeduct.clear();
-        moneyValueDeduct.clear();
-        deductListView.getItems().clear();
+    private void clearAllFields() {
+        clearTextFields(paymentDescription);
+        clearTextFields(moneyValue);
+        clearTextArea(longPaymentDescription);
+        clearTextFields(paymentDescriptionDeduct);
+        clearTextFields(moneyValueDeduct);
+        clearLists(deductListView);
+    }
+
+    public void clearTextArea(TextArea area) {
+        area.clear();
+    }
+
+    public void clearTextFields(TextField field) {
+        field.clear();
+    }
+
+    public void clearLists(ListView listView) {
+        listView.getItems().clear();
     }
 
     @FXML
@@ -327,7 +341,7 @@ public class UnauthorisedController {
     }
 
     // Formatter do dokończenia - mozna zrobić formatowanie po zakończeniu śledzenia pola
-    private void formatTextFieldWithMoneyValue(TextField field) {
+    public void formatTextFieldWithMoneyValue(TextField field) {
         String fieldValueGetText = field.getText();
 
         if (fieldValueGetText.contains(",")) {
@@ -341,6 +355,19 @@ public class UnauthorisedController {
         } else if (!inputIsNumber()) {
             showAlertBox("Input must contain numbers.");
         }
+    }
+
+    /**
+     * Checks with regular expression if input value contains numbers and dot or
+     * comma signs.
+     *
+     * @return
+     */
+    private boolean inputIsNumber() {
+        String value = moneyValue.getText();
+        String regex = "^[0-9.,]*$";
+
+        return value.matches(regex);
     }
 
     /**
@@ -405,19 +432,6 @@ public class UnauthorisedController {
         deductListView.setItems(observableDeductList);
     }
 
-    /**
-     * Checks with regular expression if input value contains numbers and dot or
-     * comma signs.
-     *
-     * @return
-     */
-    private boolean inputIsNumber() {
-        String value = moneyValue.getText();
-        String regex = "^[0-9.,]*$";
-
-        return value.matches(regex);
-    }
-
     private void showAlertBox(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -433,11 +447,11 @@ public class UnauthorisedController {
         }
     }
 
-    private float getValueFromStringToFloat(String value) {
+    public float getValueFromStringToFloat(String value) {
         return Float.parseFloat(value);
     }
 
-    private void subset(List<Members> data, int k, int start, int currentLength, boolean[] used) {
+    public void subset(List<Members> data, int k, int start, int currentLength, boolean[] used) {
         if (currentLength == k) {
             for (int i = 0; i < data.size(); i++) {
                 if (used[i] == true) {
@@ -475,7 +489,7 @@ public class UnauthorisedController {
      * payerID is an int, so we have to convert String to int, using
      * Integer.parseInt(String s).
      */
-    private void whoHasToMakeSettlement(int payerID) {
+    public void whoHasToMakeSettlement(int payerID) {
         String payer = String.valueOf(payerID);
 
         for (Map.Entry<Integer, String> entry : pairsOfPayers.entrySet()) {
