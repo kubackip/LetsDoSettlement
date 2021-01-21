@@ -48,12 +48,6 @@ public class PopUpWindowController {
 
     private void showSettlement() {
         for (int i = 0; i < pairsSettlement.length; i++) {
-//            System.out.println("pairsOfPayers get(i): " + pairsOfPayers.get(i));
-//            System.out.println("pairsOfPayers charAt(1)" + pairsOfPayers.get(i).charAt(1));
-//            System.out.println("pairsOfPayers charAt(0)" + pairsOfPayers.get(i).charAt(0));
-
-            System.out.println("i: " + i);
-
             if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
                 settlement.append(memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(1))).toString() + " musi oddać "
                         + memberList.get(Character.getNumericValue(pairsOfPayers.get(i).charAt(0))).toString()

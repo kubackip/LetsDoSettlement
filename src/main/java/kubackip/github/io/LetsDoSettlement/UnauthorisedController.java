@@ -174,7 +174,6 @@ public class UnauthorisedController {
                 updateList();
 
                 updatePairsSettlement(payment);
-//                showPairsSettlement();
 
                 sumOfDeductedPayments = 0;
                 paymentID++;
@@ -281,7 +280,6 @@ public class UnauthorisedController {
 
         if (assignIdToPayment.containsValue(specificPayment)) {
             mapKeyValue = getKeyFromValue(assignIdToPayment, specificPayment);
-            System.out.println(paymentList.get(mapKeyValue));
 
             int payerId = paymentList.get(mapKeyValue).getPayerID();
             String paymentValue = String.valueOf(paymentList.get(mapKeyValue).getValue());
@@ -340,7 +338,11 @@ public class UnauthorisedController {
         });
     }
 
-    // Formatter do dokończenia - mozna zrobić formatowanie po zakończeniu śledzenia pola
+    /**
+     * Format given TextField. Replace comma with dot, and format double value.
+     * 
+     * @param field 
+     */
     public void formatTextFieldWithMoneyValue(TextField field) {
         String fieldValueGetText = field.getText();
 
@@ -359,7 +361,7 @@ public class UnauthorisedController {
 
     /**
      * Checks with regular expression if input value contains numbers and dot or
-     * comma signs.
+     * comma signs
      *
      * @return
      */
@@ -371,7 +373,7 @@ public class UnauthorisedController {
     }
 
     /**
-     * Formatting input in moneyValue Text Field.
+     * Formatting input in moneyValue Text Field
      *
      * @param event
      */
@@ -410,7 +412,7 @@ public class UnauthorisedController {
 
     /**
      * Updates ListView paymentListView with value from paymentDescription and
-     * dateOfPayment fields.
+     * dateOfPayment fields
      */
     private void updateList() {
         String specificPayment = getPaymentDescriptionValue() + " - "
@@ -451,6 +453,16 @@ public class UnauthorisedController {
         return Float.parseFloat(value);
     }
 
+    /**
+     * Create pairs of members without repetitions, using recursive function.
+     * Taken from SO, but I don't have direct link to problem
+     *
+     * @param data
+     * @param k
+     * @param start
+     * @param currentLength
+     * @param used
+     */
     public void subset(List<Members> data, int k, int start, int currentLength, boolean[] used) {
         if (currentLength == k) {
             for (int i = 0; i < data.size(); i++) {
@@ -477,17 +489,29 @@ public class UnauthorisedController {
         subset(data, k, start + 1, currentLength, used);
     }
 
+    /**
+     * Pass Payment Object to whoHasToMakeSettlement method
+     *
+     * @param p
+     */
     private void updatePairsSettlement(Payment p) {
-        // find payer
-        System.out.println("ID Osoby płacącej: " + p.getPayerID());
-
-        //find all payment pairs 
         whoHasToMakeSettlement(p.getPayerID());
     }
 
     /**
-     * payerID is an int, so we have to convert String to int, using
-     * Integer.parseInt(String s).
+     * Update pairsSettlement array depending on who paid. Need to take values from 
+     * pairsOfPayers map, that stores id of two members, e.g. 01 means that this 
+     * is a pair of member with id = 0, and id = 1. Method knows payer id, because 
+     * it is passed in the parameter. We have to find all values that contain payer 
+     * id, and update pairsSettlement array: if payer id is first in map value, we
+     * increase array value. If payer is second in map value, we have to decrease
+     * array value. To update proper array field, we use key from map. 
+     * 
+     * If pairsSettlement array for given key is greater than zero, second member
+     * from pair has to give money back. If pairsSettlement is less than zero, first
+     * member from pair has to give money back.
+     * 
+     * @param payerID
      */
     public void whoHasToMakeSettlement(int payerID) {
         String payer = String.valueOf(payerID);
@@ -512,6 +536,7 @@ public class UnauthorisedController {
     }
 
     /**
+     * Return Factorial value from given number
      *
      * @param number
      * @return factorial
@@ -522,38 +547,6 @@ public class UnauthorisedController {
             factorial *= i;
         }
         return factorial;
-    }
-
-    private void showPairsSettlement() {
-        System.out.println("\nJak się rozkładają płatności na poszczególne pary:");
-
-        for (int i = 0; i < pairsSettlement.length; i++) {
-            System.out.println("pairsSettlement[" + i + "]: " + pairsSettlement[i]);
-            System.out.println("pairsSettlement[" + i + "] / memberList.size():" + (pairsSettlement[i] / memberList.size()));
-            System.out.println("pairsDeductedSettlement[" + i + "]: " + pairsDeductedSettlement[i]);
-
-            if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] >= 0) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) >= (-pairsDeductedSettlement[i])) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else if (pairsSettlement[i] > 0 && pairsDeductedSettlement[i] < 0 && (pairsSettlement[i] / memberList.size()) < (-pairsDeductedSettlement[i])) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] <= 0) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) >= pairsDeductedSettlement[i]) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(0) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(1) + " [" + -((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else if (pairsSettlement[i] < 0 && pairsDeductedSettlement[i] > 0 && -(pairsSettlement[i] / memberList.size()) < pairsDeductedSettlement[i]) {
-                System.out.println("Osoba o ID = " + pairsOfPayers.get(i).charAt(1) + " musi oddać osobie o ID = "
-                        + pairsOfPayers.get(i).charAt(0) + " [" + ((pairsSettlement[i] / memberList.size()) + pairsDeductedSettlement[i]) + "] PLN");
-            } else {
-                System.out.println("Nikt nikomy nie jest nic winny!");
-            }
-        }
     }
 
     /**
@@ -589,91 +582,46 @@ public class UnauthorisedController {
         }
     }
 
-    /**
-     * Getters & Setters
-     *
-     * @return
-     */
     public String getPaymentDescriptionValue() {
         return paymentDescriptionValue;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getDateOfPayment() {
         return dateOfPayment.getValue().toString();
     }
 
-    /**
-     *
-     * @param value
-     */
     public void setPaymentDescriptionValue(String value) {
         this.paymentDescriptionValue = value;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getLongPaymentDescriptionValue() {
         return longPaymentDescriptionValue;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPaymentDescriptionValueDeduct() {
         return paymentDescriptionValueDeduct;
     }
 
-    /**
-     *
-     * @param paymentDescriptionValueDeduct
-     */
     public void setPaymentDescriptionValueDeduct(String paymentDescriptionValueDeduct) {
         this.paymentDescriptionValueDeduct = paymentDescriptionValueDeduct;
     }
 
-    /**
-     *
-     * @param longPaymentDescriptionValue
-     */
     public void setLongPaymentDescriptionValue(String longPaymentDescriptionValue) {
         this.longPaymentDescriptionValue = longPaymentDescriptionValue;
     }
 
-    /**
-     *
-     * @return
-     */
     public float getMoneyValueValue() {
         return moneyValueValue;
     }
 
-    /**
-     *
-     * @param moneyValueValue
-     */
     public void setMoneyValueValue(float moneyValueValue) {
         this.moneyValueValue = moneyValueValue;
     }
 
-    /**
-     *
-     * @return
-     */
     public float getMoneyValueValueDeduct() {
         return moneyValueValueDeduct;
     }
 
-    /**
-     *
-     * @param moneyValueValueDeduct
-     */
     public void setMoneyValueValueDeduct(float moneyValueValueDeduct) {
         this.moneyValueValueDeduct = moneyValueValueDeduct;
     }
@@ -709,5 +657,4 @@ public class UnauthorisedController {
     public static float[] getPairsDeductedSettlement() {
         return pairsDeductedSettlement;
     }
-
 }
