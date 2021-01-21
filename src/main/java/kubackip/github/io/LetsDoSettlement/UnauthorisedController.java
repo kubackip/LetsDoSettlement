@@ -128,20 +128,17 @@ public class UnauthorisedController {
         if (!pairMapCreated && AddMemberController.getMemberList() != null) {
             boolean[] usedBoolean = new boolean[memberList.size()];
 
-            System.out.println("memberList size: " + memberList.size());
             pairsSettlement = new float[numberOfCombinations(memberList.size(), 2)];
-            System.out.println("pairsSettlement length: " + pairsSettlement.length);
-
             pairsDeductedSettlement = new float[numberOfCombinations(memberList.size(), 2)];
-            System.out.println("pairsDeductedSettlement length: " + pairsDeductedSettlement.length);
-            subset(memberList, 2, 0, 0, usedBoolean);
 
+            subset(memberList, 2, 0, 0, usedBoolean);
             pairMapCreated = true;
         }
     }
 
     /**
-     * Creating new Payment object, with values from text fields and etc.
+     * Creating new Payment object, with values from text fields. Add this object 
+     * to paymentList.
      *
      * @param event
      */
@@ -158,7 +155,7 @@ public class UnauthorisedController {
 
         if (valueFromDescriptionTextField.length() > 0 && valueFromMoneyValueTextField > 0.00) {
             if (observablePaymentList.contains(valueName)) {
-                showAlertBox("Płatność o takiej nazwie już istanieje, " + "proszę wybrac inną nazwę!");
+                showAlertBox("Płatność o takiej nazwie już istanieje, proszę wybrać inną nazwę!");
             } else {
                 payment = new Payment(
                         getPaymentDescriptionValue(),
@@ -172,21 +169,24 @@ public class UnauthorisedController {
 
                 clearAllFields();
                 updateList();
-
                 updatePairsSettlement(payment);
 
-                sumOfDeductedPayments = 0;
+                setSumOfDeductedPayments(0f);
                 paymentID++;
             }
         }
     }
 
+    /**
+     * Create new DeductedPayment object, add this object to deductedPaymentList.
+     * 
+     * @param event 
+     */
     @FXML
     private void addDeductedPayment(ActionEvent event) {
         String valueFromDescriptionTextFieldDeduct = paymentDescriptionDeduct.getText();
         setPaymentDescriptionValueDeduct(valueFromDescriptionTextFieldDeduct);
-        float valueFromMoneyValueDeductTextField = getValueFromStringToFloat(
-                moneyValueDeduct.getText());
+        float valueFromMoneyValueDeductTextField = getValueFromStringToFloat(moneyValueDeduct.getText());
 
         sumOfDeductedPayments += valueFromMoneyValueDeductTextField;
 
@@ -194,28 +194,32 @@ public class UnauthorisedController {
         setSumOfDeductedPayments(sumOfDeductedPayments);
 
         if (getSumOfDeductedPayments() > getValueFromStringToFloat(moneyValue.getText())) {
-            System.out.println("Błąd: Suma odliczonych płatności przewyższa wartość zakupów");
+            setSumOfDeductedPayments(0f);
+            showAlertBox("Suma odliczonych płatności przewyższa wartość zakupów");
+        } else {
+            deductedPayment = new DeductedPayments(
+                    getPaymentDescriptionValueDeduct(),
+                    getMoneyValueValueDeduct(),
+                    paymentID,
+                    payer.getValue().getId(),
+                    payerDeduct.getValue().getId());
+
+            deductedPaymentList.add(deductedPayment);
+
+            clearTextFields(paymentDescriptionDeduct);
+            clearTextFields(moneyValueDeduct);
+
+            moneyToDeduct();
+            updateDeductList();
         }
-
-        deductedPayment = new DeductedPayments(
-                getPaymentDescriptionValueDeduct(),
-                getMoneyValueValueDeduct(),
-                paymentID,
-                payer.getValue().getId(),
-                payerDeduct.getValue().getId());
-
-        deductedPaymentList.add(deductedPayment);
-        System.out.println(deductedPaymentList);
-
-//        paymentDescriptionDeduct.clear();
-//        moneyValueDeduct.clear();
-        clearTextFields(paymentDescriptionDeduct);
-        clearTextFields(moneyValueDeduct);
-
-        moneyToDeduct();
-        updateDeductList();
     }
 
+    /**
+     * Update pairsDeductedSettlement array. If pairsDeductedSettlement array for 
+     * given key is greater than zero, second member from pair has to give money back.
+     * If pairsSettlement is less than zero, first member from pair has to give
+     * money back.
+     */
     private void moneyToDeduct() {
         int personWhoIsPayer = payer.getValue().getId();
         int personWhoShouldDeductMoney = payerDeduct.getValue().getId();
@@ -225,17 +229,13 @@ public class UnauthorisedController {
         if (personWhoIsPayer < personWhoShouldDeductMoney) {
             members = String.valueOf(personWhoIsPayer) + String.valueOf(personWhoShouldDeductMoney);
             key = getKeyFromValue(pairsOfPayers, members);
-            System.out.println("key: " + key);
+
             pairsDeductedSettlement[key] += getMoneyValueValueDeduct();
         } else if (personWhoIsPayer > personWhoShouldDeductMoney) {
             members = String.valueOf(personWhoShouldDeductMoney) + String.valueOf(personWhoIsPayer);
             key = getKeyFromValue(pairsOfPayers, members);
-            System.out.println("key: " + key);
-            pairsDeductedSettlement[key] -= getMoneyValueValueDeduct();
-        }
 
-        for (float f : pairsDeductedSettlement) {
-            System.out.println("f: " + f);
+            pairsDeductedSettlement[key] -= getMoneyValueValueDeduct();
         }
     }
 
@@ -274,7 +274,6 @@ public class UnauthorisedController {
 
     @FXML
     private void showPaymentDetails(MouseEvent event) {
-
         String specificPayment = paymentListView.getSelectionModel().getSelectedItem();
         int mapKeyValue;
 
@@ -340,8 +339,8 @@ public class UnauthorisedController {
 
     /**
      * Format given TextField. Replace comma with dot, and format double value.
-     * 
-     * @param field 
+     *
+     * @param field
      */
     public void formatTextFieldWithMoneyValue(TextField field) {
         String fieldValueGetText = field.getText();
@@ -419,8 +418,7 @@ public class UnauthorisedController {
                 + payer.getValue().getName() + ", Data: " + getDateOfPayment();
 
         if (!observablePaymentList.contains(specificPayment)) {
-            observablePaymentList.add(getPaymentDescriptionValue() + " - "
-                    + payer.getValue().getName() + ", Data: " + getDateOfPayment());
+            observablePaymentList.add(specificPayment);
             paymentListView.setItems(observablePaymentList);
             assignIdToPayment.put(paymentID, specificPayment);
         } else {
@@ -499,18 +497,19 @@ public class UnauthorisedController {
     }
 
     /**
-     * Update pairsSettlement array depending on who paid. Need to take values from 
-     * pairsOfPayers map, that stores id of two members, e.g. 01 means that this 
-     * is a pair of member with id = 0, and id = 1. Method knows payer id, because 
-     * it is passed in the parameter. We have to find all values that contain payer 
-     * id, and update pairsSettlement array: if payer id is first in map value, we
-     * increase array value. If payer is second in map value, we have to decrease
-     * array value. To update proper array field, we use key from map. 
-     * 
-     * If pairsSettlement array for given key is greater than zero, second member
-     * from pair has to give money back. If pairsSettlement is less than zero, first
-     * member from pair has to give money back.
-     * 
+     * Update pairsSettlement array depending on who paid. Need to take values
+     * from pairsOfPayers map, that stores id of two members, e.g. 01 means that
+     * this is a pair of member with id = 0, and id = 1. Method knows payer id,
+     * because it is passed in the parameter. We have to find all values that
+     * contain payer id, and update pairsSettlement array: if payer id is first
+     * in map value, we increase array value. If payer is second in map value,
+     * we have to decrease array value. To update proper array field, we use key
+     * from map.
+     *
+     * If pairsSettlement array for given key is greater than zero, second
+     * member from pair has to give money back. If pairsSettlement is less than
+     * zero, first member from pair has to give money back.
+     *
      * @param payerID
      */
     public void whoHasToMakeSettlement(int payerID) {
